@@ -70,7 +70,6 @@ Finally, folder `integration_test` has an integration test. It is run with
 
 `flutter test integration_test --dart-define OWM_API_KEY=<API KEY>`
 
-
 Pure data classes, abstract classes and the third party dependencies are not tested. The ui layer has both unit tests for the `WeatherNotifier` state management class and widget tests for the `WeatherScreen`. The `test/utils` folder contains dummy JSON data we need in more than one test and a reader function for it.
 
 I am using the [mocktail](https://pub.dev/packages/mocktail) package for mocking dependencies.
@@ -102,11 +101,11 @@ Implement the UI Layer
 
 To allow internet access, `macos/Runner/DebugProfile.entitlements` and `macos/Runner/Release.entitlements` have to have these entries:
 
-´´´
+```
 <!-- Required to fetch data from the internet. -->
 <key>com.apple.security.network.client</key>
 <true/>
-´´´
+```
 
 ## Why minimal?
 
@@ -152,5 +151,8 @@ This example is distilled from these sources:
 * https://codewithandrea.com/articles/flutter-api-keys-dart-define-env-files/
 * https://stackoverflow.com/questions/51791501/how-to-debounce-textfield-onchange-in-dart
 
+## License
+
+MIT License
 
 
