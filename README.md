@@ -109,6 +109,8 @@ To allow internet access, `macos/Runner/DebugProfile.entitlements` and `macos/Ru
 
 ## Why minimal?
 
+![diagram](docs/weather_app_tdd.png)
+
 Clean architecture already is a handful. There are quite a few concepts to grasp and the reasons behind particular decisions are often not explained. There are abstractions and lots of directories. 
 
 "All problems in computer science can be solved by another level of indirection, except for the problem of too many layers of indirection.", attributed to [David Wheeler](https://en.wikipedia.org/wiki/David_Wheeler_%28computer_scientist%29) illustrates the issue of having too much of abstraction. 
