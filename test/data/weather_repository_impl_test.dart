@@ -58,23 +58,44 @@ void main() {
     );
 
     test(
-      'should return a server failure when a call to data source is unsuccessful',
+      'should return a CityNotFoundFailure when a CityNotFoundException is thrown',
       () async {
         when(() =>
                 mockWeatherRemoteDataSource.getCurrentWeather(testNonCityName))
-            .thenThrow(ServerException());
+            .thenThrow(CityNotFoundException());
 
         final result = await sut.getCurrentWeather(testNonCityName);
 
-        expect(
-            result,
-            equals(const Left(
-                ServerFailure('The Open Weather API reported an error.'))));
+        expect(result, equals(const Left(CityNotFoundFailure())));
       },
     );
 
     test(
-      'should return a connection failure when the device has no internet',
+      'should return a ApiKeyFailure failure when a ApiKeyException is thrown',
+      () async {
+        when(() => mockWeatherRemoteDataSource.getCurrentWeather(testCityName))
+            .thenThrow(ApiKeyException());
+
+        final result = await sut.getCurrentWeather(testCityName);
+
+        expect(result, equals(const Left(ApiKeyFailure())));
+      },
+    );
+
+    test(
+      'should return a ServerFailure when a ServerException is thrown',
+      () async {
+        when(() => mockWeatherRemoteDataSource.getCurrentWeather(testCityName))
+            .thenThrow(ServerException());
+
+        final result = await sut.getCurrentWeather(testCityName);
+
+        expect(result, equals(const Left(ServerFailure())));
+      },
+    );
+
+    test(
+      'should return a connection failure when a SocketException is thrown / the device has no internet',
       () async {
         when(() =>
                 mockWeatherRemoteDataSource.getCurrentWeather(testNonCityName))
@@ -82,10 +103,7 @@ void main() {
 
         final result = await sut.getCurrentWeather(testNonCityName);
 
-        expect(
-            result,
-            equals(const Left(
-                ConnectionFailure('Failed to connect to the network.'))));
+        expect(result, equals(const Left(ConnectionFailure())));
       },
     );
   });

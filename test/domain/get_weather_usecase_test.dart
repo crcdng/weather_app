@@ -49,12 +49,10 @@ void main() {
 
   test('should pass a failure when the API reports an error', () async {
     when(() => mockWeatherRepository.getCurrentWeather(testNonCityName))
-        .thenAnswer((_) async => const Left(
-            ServerFailure('The Open Weather API reported an error.')));
+        .thenAnswer((_) async => const Left(ServerFailure()));
 
     final result = await sut.call(city: testNonCityName);
 
-    expect(result,
-        const Left(ServerFailure('The Open Weather API reported an error.')));
+    expect(result, const Left(ServerFailure()));
   });
 }

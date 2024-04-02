@@ -75,13 +75,20 @@ The annotation "TDD" below indicates which classes are tested via Test-Driven De
 
 `weather_model_test.dart` tests whether the `WeatherModel` is a subclass of `WeatherEntity` and whether the model returned from its JSON factory constructor is assembled correctly.
 
-`remote_datasource_test.dart` tests whether the `WeatherRemoteDataSource` retuns a `WeatherModel` if the API call is successful and throws a `ServerException` otherwise. The `http.Client` is mocked.
+`remote_datasource_test.dart` tests whether the `WeatherRemoteDataSource` retuns a `WeatherModel` if the API call is successful and throws various exceptions otherwise. The `http.Client` is mocked.
 
-`weather_repository_impl_test.dart` tests whether the `WeatherRepositoryImpl` retuns a `Right(WeatherEntity)` from a `WeatherModel` passed in by the `WeatherRemoteDataSource` and otherwise turns a `ServerException` into a `Left(ServerFailure)` and a `SocketException` into a `Left(SocketFailure)`. The `WeatherRemoteDataSource` is mocked.
+`weather_repository_impl_test.dart` tests whether the `WeatherRepositoryImpl` retuns a `Right(WeatherEntity)` from a `WeatherModel` passed in by the `WeatherRemoteDataSource` and otherwise turns exceptions into objects. It distinguishes between:
+
+- city not found, which happens while typing the city name: `CityNotFoundException` -> `Left(CityNotFoundFailure)`
+- wrong API key: `ApiKeyException` -> `Left(ApiKeyFailure)`
+- other Server errors: `ServerException` -> `Left(ServerFailure)`
+- no Internet connection: `SocketException` -> `Left(SocketFailure)`
+
+The `WeatherRemoteDataSource` is mocked.
 
 `weather_notifier_test.dart` tests the state management: is `WeatherNotifier` calling the (mocked) `GetWeatherUsecase`? Are listeners notified? Are the fields updated with a `WeatherEntity` or with a `Failure`? 
 
-`weather_screen_test.dart` consists of widget tests. To get the test green that checks if the weather info appears on the screen, it is necessary to mock/stub/spy `WeatherNotifier`, which is a `ChangeNotifier` that updates the widget tree via the `Consumer` widget. This part is a bit tedious and [not well documented](https://github.com/rrousselGit/provider/issues/182).    
+`weather_screen_test.dart` consists of widget tests. To get the test green that checks if the weather info appears on the screen, it is necessary to mock/stub/fake `WeatherNotifier`, which is a `ChangeNotifier` that updates the widget tree via the `Consumer` widget. This part is a bit tedious and [not well documented](https://github.com/rrousselGit/provider/issues/182). It is also tested that `CityNotFoundFailure` does not display a message whereas other failures show one.
 
 Finally, folder `integration_test` has an integration test. It is run with
 
@@ -122,7 +129,7 @@ Clean architecture already is a handful. There are quite a few concepts to grasp
 
 "All problems in computer science can be solved by another level of indirection, except for the problem of too many layers of indirection.", attributed to [David Wheeler](https://en.wikipedia.org/wiki/David_Wheeler_%28computer_scientist%29) illustrates the issue of having too much of abstraction. 
 
-Therefore the goal for this example is to be as minimal as possible. I do not use injection containers, hooks, API wrappers, code generation or some of the other third party packages some authors of clean architecture tutorials are fond of. For state management, I follow the basic 'Provider' approach https://docs.flutter.dev/data-and-backend/state-mgmt/simple. I also use the [equatable](https://pub.dev/packages/equatable) package to simplify object comparison in tests a bit and the `Either` construct from the [fpdart library](https://pub.dev/packages/fpdart) in order to transform exceptions into types inside the repository.  
+Therefore the goal for this example is to be as minimal as possible. I do not use injection containers, hooks, API wrappers, code generation or some of the other third party packages some authors of clean architecture tutorials are fond of. For state management, I follow the basic 'Provider' approach https://docs.flutter.dev/data-and-backend/state-mgmt/simple. I also use the [equatable](https://pub.dev/packages/equatable) package to simplify object comparison in tests a bit and the `Either` construct from the [fpdart library](https://pub.dev/packages/fpdart) in order to transform exceptions into types inside the repository. All in all the app has four dependencies (fpdart, equatable, http, provider) and one development dependency (mocktail). 
 
 I decided to not write additional abstract superclasses of Use Cases to avoid subsequent modeling of the parameters which adds a lot of complexity and little benefit in my oponion. The same goes with the Data Sources which also could be further abstracted. Because tha app only has one feature - getting the current weather - I decided to leave out the "feature" directory and because the example is minimal, I put the all the files that belong to a leyer into one directory: "ui", "domain" and "data", and a "common" directory for items used besides or across the layers such as error types or constants used in code and in tests such as the URL of the API. 
 
@@ -138,7 +145,6 @@ A few ideas for extending the example are:
 * Store a list of favourite cities
 * Support different languages
 * Adapt to different platforms (I tested on macOS and Android)
-* Better error handling, more fine grained Exception / Failure types 
 * Handle loading state / long loading (this is done with Bloc the tutorial source)
 * Expand the app functionality with other data from the OpenWeather API such as forecasts 
 * Design a nice UI / weather animations

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:weather_app/common/errors.dart';
 // import '../common/errors.dart';
 import 'weather_notifier.dart';
 
@@ -64,13 +65,16 @@ class _WeatherScreenState extends State<WeatherScreen> {
             const SizedBox(height: 32.0),
             Consumer<WeatherNotifier>(
               builder: (context, notifier, child) {
-                // TODO distinguish between "city not found" 404 and other 404s
-                // if (notifier.failure is ServerFailure) {
-                //   return Center(
-                //     child: Text(notifier.failure!.message),
-                //   );
-                // }
-                // weather is of type WeatherEntity? and can be null
+                if (notifier.failure is CityNotFoundFailure) {
+                  return Container();
+                } else if (notifier.failure is ApiKeyFailure ||
+                    notifier.failure is ServerFailure ||
+                    notifier.failure is ConnectionFailure) {
+                  return Center(
+                    key: const Key('error_message'),
+                    child: Text(notifier.failure!.message),
+                  );
+                }
                 if (notifier.weather == null) {
                   return Container();
                 }

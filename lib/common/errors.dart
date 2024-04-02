@@ -3,12 +3,26 @@ abstract class Failure {
   const Failure(this.message);
 }
 
+class CityNotFoundFailure extends Failure {
+  const CityNotFoundFailure() : super('City not found.');
+}
+
+class ApiKeyFailure extends Failure {
+  const ApiKeyFailure()
+      : super('Wrong API key. Check your API key and try again.');
+}
+
 class ServerFailure extends Failure {
-  const ServerFailure(super.message);
+  const ServerFailure() : super('A Server error occurred. Try again later.');
 }
 
 class ConnectionFailure extends Failure {
-  const ConnectionFailure(super.message);
+  const ConnectionFailure()
+      : super('No conection to the server. Check your internet connection.');
 }
+
+class CityNotFoundException implements Exception {}
+
+class ApiKeyException implements Exception {}
 
 class ServerException implements Exception {}

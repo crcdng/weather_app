@@ -16,11 +16,14 @@ class WeatherRepositoryImpl implements WeatherRepository {
     try {
       final result = await remoteDataSource.getCurrentWeather(city);
       return Right(result.toEntity());
+    } on CityNotFoundException {
+      return const Left(CityNotFoundFailure());
+    } on ApiKeyException {
+      return const Left(ApiKeyFailure());
     } on ServerException {
-      return const Left(
-          ServerFailure('The Open Weather API reported an error.'));
+      return const Left(ServerFailure());
     } on SocketException {
-      return const Left(ConnectionFailure('Failed to connect to the network.'));
+      return const Left(ConnectionFailure());
     }
   }
 }
