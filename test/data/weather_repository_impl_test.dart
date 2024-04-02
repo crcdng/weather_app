@@ -8,6 +8,7 @@ import 'package:weather_app/data/remote_datasource.dart';
 import 'package:weather_app/data/weather_model.dart';
 import 'package:weather_app/data/weather_repository_impl.dart';
 import 'package:weather_app/domain/weather_entity.dart';
+import 'package:weather_app/domain/weather_repository.dart';
 
 class MockWeatherRemoteDataSource extends Mock
     implements WeatherRemoteDataSource {}
@@ -37,6 +38,10 @@ void main() {
   setUp(() {
     mockWeatherRemoteDataSource = MockWeatherRemoteDataSource();
     sut = WeatherRepositoryImpl(remoteDataSource: mockWeatherRemoteDataSource);
+  });
+
+  test('should be a subclass of WeatherRepository', () {
+    expect(sut, isA<WeatherRepository>());
   });
 
   group('get current weather', () {

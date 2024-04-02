@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '../common/constants.dart';
+import '../common/urls.dart';
 import '../common/errors.dart';
 import 'weather_model.dart';
 

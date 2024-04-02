@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:http/http.dart' as http;
-import 'package:weather_app/common/constants.dart';
+import 'package:weather_app/common/urls.dart';
 import 'package:weather_app/common/errors.dart';
 import 'package:weather_app/data/remote_datasource.dart';
 import 'package:weather_app/data/weather_model.dart';
