@@ -50,6 +50,23 @@ The `WeatherRepositorImpl` class implements the contract of the `WeatherReposito
 
 In `main.dart`, we insert a `ChangeNotifierProvider` from the provider package and instantiate the classes down the dependeny chain: `WeatherNotifier`, `GetWeatherUsecase`, `WeatherRepositoryImpl`.
 
+### App Preparation 
+
+If you deploy to macOS, edit both `macos/Runner/DebugProfile.entitlements` and ` macos/Runner/Release.entitlements` and add the following key:
+
+```
+<!-- Required to fetch data from the internet. -->
+<key>com.apple.security.network.client</key>
+<true/>
+```
+
+If you deploy to Android, edit `android/app/src/main/AndroidManifest.xml` and add the following key (the debug and profile versions already have this permission):
+
+```
+<!-- Required to fetch data from the internet. -->
+<uses-permission android:name="android.permission.INTERNET" />
+```
+
 ## Tests
 
 The annotation "TDD" below indicates which classes are tested via Test-Driven Development. You can also write code first and tests later, whatever you prefer. 
@@ -97,16 +114,6 @@ Implement the UI Layer
 11. main.dart / ChangeNotifierProvider  
 12. WeatherScreen / Consumer (TDD)
 
-### App Preparation 
-
-To allow internet access, `macos/Runner/DebugProfile.entitlements` and `macos/Runner/Release.entitlements` have to have these entries:
-
-```
-<!-- Required to fetch data from the internet. -->
-<key>com.apple.security.network.client</key>
-<true/>
-```
-
 ## Why minimal?
 
 ![diagram](docs/weather_app_tdd.png)
@@ -130,7 +137,7 @@ A few ideas for extending the example are:
 * Enter the OpenWeather API key on startup, store it and offer a settings screen to change it  
 * Store a list of favourite cities
 * Support different languages
-* Test on and adapt to different platforms (I developed for macOs)
+* Adapt to different platforms (I tested on macOS and Android)
 * Better error handling, more fine grained Exception / Failure types 
 * Handle loading state / long loading (this is done with Bloc the tutorial source)
 * Expand the app functionality with other data from the OpenWeather API such as forecasts 
