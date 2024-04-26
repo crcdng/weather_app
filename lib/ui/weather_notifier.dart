@@ -10,7 +10,7 @@ class WeatherNotifier with ChangeNotifier {
 
   WeatherNotifier({required this.usecase});
 
-  getCurrentWeather(String city) async {
+  Future<void> getCurrentWeather(String city) async {
     final result = await usecase(city: city);
     result.fold((failure) {
       this.failure = failure;

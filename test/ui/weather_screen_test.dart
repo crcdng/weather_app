@@ -36,7 +36,7 @@ class FakeWeatherNotifier extends WeatherNotifier {
   }
 
   @override
-  getCurrentWeather(String city) {
+  Future<void> getCurrentWeather(String city) async {
     if (instrumentedFailure != null) {
       failure = instrumentedFailure;
     } else {
