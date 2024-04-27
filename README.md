@@ -20,7 +20,7 @@ Clean architecture dictates that this central layer does not depend either on th
 
 `WeatherEntity` is an immutable pure data class that contains the fields we are interested in. Although we don't test it directly it uses the equatable package so that instances of `WeatherModel` can be compared in tests. 
 
-The `WeatherRepository` either returns a `Failure` object or a `WeatherEntity`. It is separated into an abstract class in the domain layer that defines the contract (interface) and a concrete class in the data layer that implements it. Because a higher layers normally depends on a lower layer this technique achieves a *dependency inversion*.
+The `WeatherRepository` either returns a `Failure` object or a `WeatherEntity`. It is separated into an abstract class in the domain layer that defines the contract (interface) and a concrete class in the data layer that implements it. This technique implements the "dependency rule": dependencies point toward higher level policies.
 
 A use case represents a user action. The `GetWeatherUsecase` gets (the abstract) `WeatherRepository` passed in via the constructor and calls its method. 
 
