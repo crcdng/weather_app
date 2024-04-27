@@ -160,12 +160,13 @@ A few ideas for extending the example are:
 
 ## Resources 
 
-This example is distilled from these sources:
+This example code is influenced by these sources:
 
 * https://www.youtube.com/watch?v=g2Mup12MccU / https://betterprogramming.pub/flutter-clean-architecture-test-driven-development-practical-guide-445f388e8604 (main source)
 
 * https://www.goodreads.com/book/show/18043011-clean-architecture
 * https://www.goodreads.com/en/book/show/387190
+* https://www.manning.com/books/good-code-bad-code
 
 * https://resocoder.com/2019/08/27/flutter-tdd-clean-architecture-course-1-explanation-project-structure/
 * https://codewithandrea.com/articles/comparison-flutter-app-architectures/ 
