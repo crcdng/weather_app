@@ -1,10 +1,12 @@
 # Flutter Minimal Clean Architecture Example
 
-This is a minimal example (with a lot of explanation) for clean architecture and test-driven development in Flutter. It fetches weather data for a city from [OpenWeatherMap](https://openweathermap.org) and displays it. The example is adapted from [this tutorial](https://www.youtube.com/watch?v=g2Mup12MccU) by Flutter Guys - see other sources below.
+This is a minimal example (with a lot of explanation) for clean architecture and test-driven development in Flutter. It fetches weather data for a city from [OpenWeatherMap](https://openweathermap.org) and displays it. The example is adapted from [this tutorial](https://www.youtube.com/watch?v=g2Mup12MccU) - see other sources below.
 
 ## Architecture overview 
 
-The main structure is UI layer, Domain layer and Data layer. From top to bottom:
+The application is structured in threee layers: UI layer, Domain layer and Data layer. 
+
+From top to bottom:
 
 ### UI layer
 
@@ -52,7 +54,7 @@ In `main.dart`, we insert a `ChangeNotifierProvider` from the provider package a
 
 ## Order of implementation: Domain -> Data -> UI 
 
-Start with the Domain layer because the other layers depend on it. Then implement the Data layer, which has most of the implementation and requires more work handling API responses, writing tests, dealing with errors. The user interface including Flutter state management comes last (or can be designed in parallel).   
+Start with the Domain layer because the other layers depend on it. Then implement the Data layer, which has most of the implementation and requires more work handling API responses, writing tests and dealing with errors. The user interface including Flutter state management comes last (or can be designed in parallel).   
 
 Implement the Domain Layer
 
