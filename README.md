@@ -1,10 +1,10 @@
 # Flutter Minimal Clean Architecture Example
 
-This is a minimal example for clean architecture and test-driven development in Flutter. It fetches weather data for a city from [OpenWeatherMap](https://openweathermap.org) and displays it. It is adapted from [this tutorial](https://www.youtube.com/watch?v=g2Mup12MccU) by Flutter Guys - see other sources below.
+This is a minimal example (with a lot of explanation) for clean architecture and test-driven development in Flutter. It fetches weather data for a city from [OpenWeatherMap](https://openweathermap.org) and displays it. The example is adapted from [this tutorial](https://www.youtube.com/watch?v=g2Mup12MccU) by Flutter Guys - see other sources below.
 
 ## Architecture overview 
 
-From top to bottom:
+The main structure is UI layer, Domain layer and Data layer. From top to bottom:
 
 ### UI layer
 
@@ -50,22 +50,30 @@ The `WeatherRepositorImpl` class implements the contract of the `WeatherReposito
 
 In `main.dart`, we insert a `ChangeNotifierProvider` from the provider package and instantiate the classes down the dependeny chain: `WeatherNotifier`, `GetWeatherUsecase`, `WeatherRepositoryImpl`.
 
-### App Preparation 
+## Order of implementation: Domain -> Data -> UI 
 
-If you deploy to macOS, edit both `macos/Runner/DebugProfile.entitlements` and ` macos/Runner/Release.entitlements` and add the following key:
+Start with the Domain layer because the other layers depend on it. Then implement the Data layer, which has most of the implementation and requires more work handling API responses, writing tests, dealing with errors. The user interface including Flutter state management comes last (or can be designed in parallel).   
 
-```
-<!-- Required to fetch data from the internet. -->
-<key>com.apple.security.network.client</key>
-<true/>
-```
+Implement the Domain Layer
 
-If you deploy to Android, edit `android/app/src/main/AndroidManifest.xml` and add the following key (the debug and profile versions already have this permission):
+1. WeatherEntity
+2. WeatherRepository
+3. Failure
+4. GetWeatherUsecase (TDD) (alternatively start from here)
 
-```
-<!-- Required to fetch data from the internet. -->
-<uses-permission android:name="android.permission.INTERNET" />
-```
+Implement the Data Layer
+
+5. WeatherModel (TDD)
+6. WeatherRemoteDataSource (TDD)
+7. ServerException, Urls
+8. WeatherRepositoryImpl (TDD)
+9. ServerFailure, ConnectionFailure
+
+Implement the UI Layer
+
+10. WeatherNotifier (TDD)
+11. main.dart / ChangeNotifierProvider  
+12. WeatherScreen / Consumer (TDD)
 
 ## Tests
 
@@ -98,28 +106,22 @@ Pure data classes, abstract classes and the third party dependencies are not tes
 
 I am using the [mocktail](https://pub.dev/packages/mocktail) package for mocking dependencies.
 
-## Order of implementation 
+### App platform preparation 
 
-Implement the Domain Layer
+If you deploy to macOS, edit both `macos/Runner/DebugProfile.entitlements` and ` macos/Runner/Release.entitlements` and add the following key:
 
-1. WeatherEntity
-2. WeatherRepository
-3. Failure
-4. GetWeatherUsecase (TDD) (alternatively start from here)
+```
+<!-- Required to fetch data from the internet. -->
+<key>com.apple.security.network.client</key>
+<true/>
+```
 
-Implement the Data Layer
+If you deploy to Android, edit `android/app/src/main/AndroidManifest.xml` and add the following key (the debug and profile versions already have this permission):
 
-5. WeatherModel (TDD)
-6. WeatherRemoteDataSource (TDD)
-7. ServerException, Urls
-8. WeatherRepositoryImpl (TDD)
-9. ServerFailure, ConnectionFailure
-
-Implement the UI Layer
-
-10. WeatherNotifier (TDD)
-11. main.dart / ChangeNotifierProvider  
-12. WeatherScreen / Consumer (TDD)
+```
+<!-- Required to fetch data from the internet. -->
+<uses-permission android:name="android.permission.INTERNET" />
+```
 
 ## Why minimal?
 
