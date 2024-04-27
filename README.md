@@ -133,9 +133,15 @@ Therefore the goal for this example is to be as minimal as possible. I do not us
 
 I decided to not write additional abstract superclasses of Use Cases to avoid subsequent modeling of the parameters which adds a lot of complexity and little benefit in my oponion. The same goes with the Data Sources which also could be further abstracted. Because tha app only has one feature - getting the current weather - I decided to leave out the "feature" directory and because the example is minimal, I put the all the files that belong to a leyer into one directory: "ui", "domain" and "data", and a "common" directory for items used besides or across the layers such as error types or constants used in code and in tests such as the URL of the API. 
 
-Some of the terms used in the clean code approach have been adapted by different authors and there seems to be a bit of confusion about naming. As an example, the Flutter reactive state management is called "business logic" in some tutorials. Business logic, however is commonly understood as the things that happen in the Domain layer, e.g. the Use Cases of the application, not the mechanisms that implement reactivity. I also prefer the term "ui layer" over "presentation layer".     
+## Naming conventions
 
-For me, the benfit of clean architecture is that it provides a structure in which one knows where to look for certain parts and what to test. It is testable because dependencies are passed into classes via constructors. We can test layer by layer and mock out the layers that are depended on. It is possible to add, swap and remove elements of the architecture horizontally (user interface, databases, APIs) and vertically (features). It is likely that these benefits become only obvious after we would add more features to the app, but keeping this example minimal helps to understand the architecture. 
+Some of the terms used in the clean code literature have been adapted by different authors and there seems to be a bit of confusion about naming. As an example, the [management of reactive state in Flutter](https://docs.flutter.dev/data-and-backend/state-mgmt/intro) is sometimes called "business logic". But business logic is traditionally known as the core logic of the application bare any user interface and low level data handling. In the clean  code approach this is exactly the Domain layer, structured into Entities and Use Cases of the application (and similar to the "Model" in MVC speak). 
+
+The Flutter state management has two jobs: to notify the user interface of changes in the underlying data and to trigger changes handled in the Domain layer caused by user interaction (similar to the "Controller" in MVC speak). These mechanisms implement reactivity and they only require a thin layer of code which is part of the "ui layer", a term I prefer over "presentation layer".     
+
+# Benefits and Outlook
+
+For me, the benfit of clean architecture is that it provides a structure in which one knows where to look for certain parts and what to test. It is testable because its dependencies are passed into classes via constructors. We can test layer by layer and mock out the layers that are depended on. It is possible to add, swap and remove elements of the architecture horizontally (user interface, databases, APIs) and vertically (features). It is likely that these benefits become only obvious in a larger project, but keeping this example minimal helps to understand the architecture. 
 
 A few ideas for extending the example are:
 

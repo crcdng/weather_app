@@ -74,6 +74,7 @@ void main() {
       expect(sut.weather, null);
       expect(sut.failure, const CityNotFoundFailure());
     });
+
     test('should set the Failure field on ApiKeyFailure', () async {
       when(() => mockGetWeatherUseCase.call(city: testNonCityName))
           .thenAnswer((_) async => const Left(ApiKeyFailure()));
@@ -83,6 +84,7 @@ void main() {
       expect(sut.weather, null);
       expect(sut.failure, const ApiKeyFailure());
     });
+
     test('should set the Failure field on ServerFailure', () async {
       when(() => mockGetWeatherUseCase.call(city: testNonCityName))
           .thenAnswer((_) async => const Left(ServerFailure()));
