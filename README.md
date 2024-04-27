@@ -18,11 +18,9 @@ The WeatherScreen hosts the `Consumer` widget and the `Provider.of<WeatherNotifi
 
 Clean architecture dictates that this central layer does not depend either on the user interface (ui layer) or on the remote API (data layer). 
 
+A use case represents a user action. The `GetWeatherUsecase` receives (the abstract) `WeatherRepository` passed in via the constructor and calls its method. The repository in turn either returns a `Failure` object or a `WeatherEntity`. It is separated into an abstract class in the domain layer that defines the contract (interface) and a concrete class in the data layer that implements it. This technique implements the Dapendeny Inversion Principle and embodies the Dependency Rule: dependencies point "inwards" toward higher level policies.
+
 `WeatherEntity` is an immutable pure data class that contains the fields we are interested in. Although we don't test it directly it uses the equatable package so that instances of `WeatherModel` can be compared in tests. 
-
-The `WeatherRepository` either returns a `Failure` object or a `WeatherEntity`. It is separated into an abstract class in the domain layer that defines the contract (interface) and a concrete class in the data layer that implements it. This technique implements the "dependency rule": dependencies point toward higher level policies.
-
-A use case represents a user action. The `GetWeatherUsecase` gets (the abstract) `WeatherRepository` passed in via the constructor and calls its method. 
 
 Use cases are implemented as callable classes (with a call method) and common interface. This could be implemented with an abstract superclass and additional work on the parameters going into the call method, which I didn't do for brevity here.
 
@@ -133,9 +131,9 @@ Clean architecture already is a handful. There are quite a few concepts to grasp
 
 "All problems in computer science can be solved by another level of indirection, except for the problem of too many layers of indirection.", attributed to [David Wheeler](https://en.wikipedia.org/wiki/David_Wheeler_%28computer_scientist%29) illustrates the issue of having too much of abstraction. 
 
-Therefore the goal for this example is to be as minimal as possible. I do not use injection containers, hooks, API wrappers, code generation or some of the other third party packages some authors of clean architecture tutorials are fond of. For state management, I follow the basic 'Provider' approach https://docs.flutter.dev/data-and-backend/state-mgmt/simple. I also use the [equatable](https://pub.dev/packages/equatable) package to simplify object comparison in tests a bit and the `Either` construct from the [fpdart library](https://pub.dev/packages/fpdart) in order to transform exceptions into types inside the repository. All in all the app has four dependencies (fpdart, equatable, http, provider) and one development dependency (mocktail). 
+Therefore the goal for this example is to be as minimal as possible. I do not use injection containers, hooks, API wrappers, code generation or some of the other third party packages some authors of clean architecture tutorials are fond of. For state management, I follow the basic 'Provider' approach https://docs.flutter.dev/data-and-backend/state-mgmt/simple. I also use the [equatable](https://pub.dev/packages/equatable) package to simplify object comparison in tests a bit and the `Either` construct from the [fpdart library](https://pub.dev/packages/fpdart) in order to transform exceptions into types inside the repository. All in all the app has four external dependencies (fpdart, equatable, http, provider) and one development dependency (mocktail). 
 
-I decided to not write additional abstract superclasses of Use Cases to avoid subsequent modeling of the parameters which adds a lot of complexity and little benefit in my oponion. The same goes with the Data Sources which also could be further abstracted. Because tha app only has one feature - getting the current weather - I decided to leave out the "feature" directory and because the example is minimal, I put the all the files that belong to a leyer into one directory: "ui", "domain" and "data", and a "common" directory for items used besides or across the layers such as error types or constants used in code and in tests such as the URL of the API. 
+I decided to not write additional abstract superclasses of Use Cases to avoid subsequent modeling of the parameters which adds a lot of complexity and little benefit in my oponion. The same goes with the Data Sources which also could be  abstracted by providing an interface. Because tha app only has one feature - getting the current weather - I decided to leave out a "feature" directory and because the example is minimal, I put the files that belong to a leyer into one directory: "ui", "domain" and "data", and a "common" directory for items used besides or across the layers such as error types or constants. 
 
 ## Naming conventions
 
