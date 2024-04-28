@@ -1,6 +1,6 @@
-# Flutter Minimal Clean Architecture Example
+# Flutter Lightweight Clean Architecture Example
 
-This is a minimal example (with a lot of explanation) for clean architecture and test-driven development in Flutter. It fetches weather data for a city from [OpenWeatherMap](https://openweathermap.org) and displays it. The example is adapted from [this tutorial](https://www.youtube.com/watch?v=g2Mup12MccU) - see other sources below.
+This is a minimal example (with a lot of explanation) for a lightweight clean architecture and test-driven development in Flutter. It fetches weather data for a city from [OpenWeatherMap](https://openweathermap.org) and displays it. The example is adapted from [this tutorial](https://www.youtube.com/watch?v=g2Mup12MccU) - see other sources below.
 
 ## Architecture overview 
 
@@ -143,7 +143,7 @@ The Flutter state management has two jobs: to notify the user interface of chang
 
 # Benefits and Outlook
 
-For me, the benfit of clean architecture is that it provides a structure in which one knows where to look for certain parts and what to test. It is testable because its dependencies are passed into classes via constructors. We can test layer by layer and mock out the layers that are depended on. It is possible to add, swap and remove elements of the architecture horizontally (user interface, databases, APIs) and vertically (features). It is likely that these benefits become only obvious in a larger project, but keeping this example minimal helps to understand the architecture. 
+For me, the benfit of this lightweight clean architecture is that it provides a structure in which one knows where to look for certain parts and what to test. It is testable because its dependencies are passed into classes via constructors. We can test layer by layer and mock out the layers that are depended on. It is possible to add, swap and remove elements of the architecture horizontally (user interface, databases, APIs) and vertically (features). It is likely that these benefits become only obvious in a larger project, but keeping this example minimal helps to understand the architecture. 
 
 A few ideas for extending the example are:
 
