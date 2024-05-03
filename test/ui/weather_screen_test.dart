@@ -19,7 +19,6 @@ const testWeatherEntity = WeatherEntity(
     humidity: 60);
 
 // NOTE a notifier fake which needs to be instrumented in widget tests
-// TODO find a better way to mock WeatherNotifier
 class FakeWeatherNotifier extends WeatherNotifier {
   late final MockWeatherNotifier mockWeatherNotifier;
   Failure? instrumentedFailure;

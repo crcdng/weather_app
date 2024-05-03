@@ -44,7 +44,7 @@ void main() {
 
     final result = await sut.call(city: testCityName);
 
-    expect(result, const Right(testWeatherEntity));
+    expect(result, equals(const Right(testWeatherEntity)));
   });
 
   test('should pass a failure when the API reports an error', () async {
@@ -53,6 +53,6 @@ void main() {
 
     final result = await sut.call(city: testNonCityName);
 
-    expect(result, const Left(ServerFailure()));
+    expect(result, equals(const Left(ServerFailure())));
   });
 }

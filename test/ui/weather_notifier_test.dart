@@ -52,7 +52,7 @@ void main() {
         notified = true;
       });
       await sut.getCurrentWeather(testCityName);
-      expect(notified, true);
+      expect(notified, equals(true));
     });
 
     test('should set the WeatherEntity field on successful call', () async {
@@ -61,8 +61,8 @@ void main() {
 
       await sut.getCurrentWeather(testCityName);
 
-      expect(sut.weather, testWeatherEntity);
-      expect(sut.failure, null);
+      expect(sut.weather, equals(testWeatherEntity));
+      expect(sut.failure, equals(null));
     });
 
     test('should set the Failure field on CityNotFoundFailure', () async {
@@ -71,8 +71,8 @@ void main() {
 
       await sut.getCurrentWeather(testNonCityName);
 
-      expect(sut.weather, null);
-      expect(sut.failure, const CityNotFoundFailure());
+      expect(sut.weather, equals(null));
+      expect(sut.failure, equals(const CityNotFoundFailure()));
     });
 
     test('should set the Failure field on ApiKeyFailure', () async {
@@ -81,8 +81,8 @@ void main() {
 
       await sut.getCurrentWeather(testNonCityName);
 
-      expect(sut.weather, null);
-      expect(sut.failure, const ApiKeyFailure());
+      expect(sut.weather, equals(null));
+      expect(sut.failure, equals(const ApiKeyFailure()));
     });
 
     test('should set the Failure field on ServerFailure', () async {
@@ -91,8 +91,8 @@ void main() {
 
       await sut.getCurrentWeather(testNonCityName);
 
-      expect(sut.weather, null);
-      expect(sut.failure, const ServerFailure());
+      expect(sut.weather, equals(null));
+      expect(sut.failure, equals(const ServerFailure()));
     });
 
     test('should set the Failure field on ConnectionFailure', () async {
@@ -101,8 +101,8 @@ void main() {
 
       await sut.getCurrentWeather(testNonCityName);
 
-      expect(sut.weather, null);
-      expect(sut.failure, const ConnectionFailure());
+      expect(sut.weather, equals(null));
+      expect(sut.failure, equals(const ConnectionFailure()));
     });
   });
 }

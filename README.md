@@ -98,7 +98,7 @@ The `WeatherRemoteDataSource` is mocked.
 
 `weather_screen_test.dart` consists of widget tests. To get the test green that checks if the weather info appears on the screen, it is necessary to mock/stub/fake `WeatherNotifier`, which is a `ChangeNotifier` that updates the widget tree via the `Consumer` widget. This part is a bit tedious and [not well documented](https://github.com/rrousselGit/provider/issues/182). It is also tested that `CityNotFoundFailure` does not display a message whereas other failures show one.
 
-Finally, folder `integration_test` has an integration test. It is run with
+Folder `integration_test` has an integration test. Because it calls the remote OpenWeatherMap API, it must be run with the API key
 
 `flutter test integration_test --dart-define OWM_API_KEY=<API KEY>`
 
