@@ -9,7 +9,8 @@ class CityNotFoundFailure extends Failure {
 
 class ApiKeyFailure extends Failure {
   const ApiKeyFailure()
-      : super('Wrong API key. Check your API key and try again.');
+      : super(
+            'Missing or incorrect API key. Check your API key and try again.');
 }
 
 class ServerFailure extends Failure {

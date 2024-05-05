@@ -5,7 +5,7 @@ import '../domain/weather_entity.dart';
 
 class WeatherNotifier with ChangeNotifier {
   final GetWeatherUsecase usecase;
-  WeatherEntity? weather;
+  WeatherEntity? weatherEntity;
   Failure? failure;
 
   WeatherNotifier({required this.usecase});
@@ -15,7 +15,7 @@ class WeatherNotifier with ChangeNotifier {
     result.fold((failure) {
       this.failure = failure;
     }, (data) {
-      weather = data;
+      weatherEntity = data;
     });
     notifyListeners();
   }

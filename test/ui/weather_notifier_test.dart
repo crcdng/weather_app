@@ -29,7 +29,7 @@ void main() {
   });
 
   test('should not set fields at the beginning', () async {
-    expect(sut.weather, null);
+    expect(sut.weatherEntity, null);
     expect(sut.failure, null);
   });
 
@@ -55,53 +55,54 @@ void main() {
       expect(notified, equals(true));
     });
 
-    test('should set the WeatherEntity field on successful call', () async {
+    test('should set the WeatherEntity field only on successful call',
+        () async {
       when(() => mockGetWeatherUseCase.call(city: testCityName))
           .thenAnswer((_) async => const Right(testWeatherEntity));
 
       await sut.getCurrentWeather(testCityName);
 
-      expect(sut.weather, equals(testWeatherEntity));
+      expect(sut.weatherEntity, equals(testWeatherEntity));
       expect(sut.failure, equals(null));
     });
 
-    test('should set the Failure field on CityNotFoundFailure', () async {
+    test('should set the Failure field only on CityNotFoundFailure', () async {
       when(() => mockGetWeatherUseCase.call(city: testNonCityName))
           .thenAnswer((_) async => const Left(CityNotFoundFailure()));
 
       await sut.getCurrentWeather(testNonCityName);
 
-      expect(sut.weather, equals(null));
+      expect(sut.weatherEntity, equals(null));
       expect(sut.failure, equals(const CityNotFoundFailure()));
     });
 
-    test('should set the Failure field on ApiKeyFailure', () async {
+    test('should set the Failure field only on ApiKeyFailure', () async {
       when(() => mockGetWeatherUseCase.call(city: testNonCityName))
           .thenAnswer((_) async => const Left(ApiKeyFailure()));
 
       await sut.getCurrentWeather(testNonCityName);
 
-      expect(sut.weather, equals(null));
+      expect(sut.weatherEntity, equals(null));
       expect(sut.failure, equals(const ApiKeyFailure()));
     });
 
-    test('should set the Failure field on ServerFailure', () async {
+    test('should set the Failure field only on ServerFailure', () async {
       when(() => mockGetWeatherUseCase.call(city: testNonCityName))
           .thenAnswer((_) async => const Left(ServerFailure()));
 
       await sut.getCurrentWeather(testNonCityName);
 
-      expect(sut.weather, equals(null));
+      expect(sut.weatherEntity, equals(null));
       expect(sut.failure, equals(const ServerFailure()));
     });
 
-    test('should set the Failure field on ConnectionFailure', () async {
+    test('should set the Failure field only on ConnectionFailure', () async {
       when(() => mockGetWeatherUseCase.call(city: testNonCityName))
           .thenAnswer((_) async => const Left(ConnectionFailure()));
 
       await sut.getCurrentWeather(testNonCityName);
 
-      expect(sut.weather, equals(null));
+      expect(sut.weatherEntity, equals(null));
       expect(sut.failure, equals(const ConnectionFailure()));
     });
   });

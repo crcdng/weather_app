@@ -88,7 +88,7 @@ The annotation "TDD" below indicates which classes are tested via Test-Driven De
 `weather_repository_impl_test.dart` tests whether the `WeatherRepositoryImpl` retuns a `Right(WeatherEntity)` from a `WeatherModel` passed in by the `WeatherRemoteDataSource` and otherwise turns exceptions into objects. It distinguishes between:
 
 - city not found, which happens while typing the city name: `CityNotFoundException` -> `Left(CityNotFoundFailure)`
-- wrong API key: `ApiKeyException` -> `Left(ApiKeyFailure)`
+- wrong / missing API key: `ApiKeyException` -> `Left(ApiKeyFailure)`
 - other Server errors: `ServerException` -> `Left(ServerFailure)`
 - no Internet connection: `SocketException` -> `Left(SocketFailure)`
 

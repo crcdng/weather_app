@@ -18,7 +18,11 @@ const testWeatherEntity = WeatherEntity(
     pressure: 987,
     humidity: 60);
 
-// NOTE a notifier fake which needs to be instrumented in widget tests
+class MockWeatherNotifier extends Mock {
+  getCurrentWeather(city);
+}
+
+// NOTE a notifier fake which needs to be instrumented for the widget test
 class FakeWeatherNotifier extends WeatherNotifier {
   late final MockWeatherNotifier mockWeatherNotifier;
   Failure? instrumentedFailure;
@@ -39,21 +43,17 @@ class FakeWeatherNotifier extends WeatherNotifier {
     if (instrumentedFailure != null) {
       failure = instrumentedFailure;
     } else {
-      weather = testWeatherEntity;
+      weatherEntity = testWeatherEntity;
     }
     notifyListeners();
   }
 }
 
-class MockWeatherNotifier extends Mock {
-  getCurrentWeather(city);
-}
-
-Widget _makeTestableWidget(Widget widget, WeatherNotifier weatherNotifierSpy) {
+Widget _makeTestableWidget(Widget widget, WeatherNotifier weatherNotifier) {
   return MaterialApp(
       home: Scaffold(
     body: ChangeNotifierProvider<WeatherNotifier>(
-        create: (context) => weatherNotifierSpy, child: widget),
+        create: (context) => weatherNotifier, child: widget),
   ));
 }
 

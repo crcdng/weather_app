@@ -75,7 +75,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                     child: Text(notifier.failure!.message),
                   );
                 }
-                if (notifier.weather == null) {
+                if (notifier.weatherEntity == null) {
                   return Container();
                 }
                 // return Container();
@@ -93,7 +93,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          notifier.weather!.city,
+                          notifier.weatherEntity!.city,
                           style: const TextStyle(
                             fontSize: 22.0,
                           ),
@@ -111,7 +111,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                     ),
                     const SizedBox(height: 8.0),
                     Text(
-                      '${notifier.weather!.main} | ${notifier.weather!.description}',
+                      '${notifier.weatherEntity!.main} | ${notifier.weatherEntity!.description}',
                       style: const TextStyle(
                         fontSize: 16.0,
                         letterSpacing: 1.2,
@@ -140,7 +140,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
-                              notifier.weather!.temperature.toString(),
+                              notifier.weatherEntity!.temperature.toString(),
                               style: const TextStyle(
                                 fontSize: 16.0,
                                 letterSpacing: 1.2,
@@ -163,7 +163,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
-                              notifier.weather!.pressure.toString(),
+                              notifier.weatherEntity!.pressure.toString(),
                               style: const TextStyle(
                                   fontSize: 16.0,
                                   letterSpacing: 1.2,
@@ -186,7 +186,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
-                                notifier.weather!.humidity.toString(),
+                                notifier.weatherEntity!.humidity.toString(),
                                 style: const TextStyle(
                                   fontSize: 16.0,
                                   letterSpacing: 1.2,
