@@ -10,7 +10,7 @@ From top to bottom:
 
 ### UI layer
 
-The `WeatherNotifier` is a ChangeNotifier from the [provider package](https://pub.dev/packages/provider). It has a `WeatherEntity` and gets a `GetWeatherUsecase` via the constructor. It calls the `GetWeatherUsecase` with the name of the city, sets the `WeatherEntity` and notifies the `Consumer` widget on our `WeatherScreen`.
+The `WeatherNotifier` is a ChangeNotifier. It has a `WeatherEntity` and gets a `GetWeatherUsecase` via the constructor. It calls the `GetWeatherUsecase` with the name of the city, sets the `WeatherEntity` and notifies the `Consumer` widget on our `WeatherScreen`.
 
 The WeatherScreen hosts the `Consumer` widget and the `Provider.of<WeatherNotifier>(context, listen: false)` call to talk to the `WeatherNotifier`. A debounce mechanism limits the number of calls.
 
