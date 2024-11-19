@@ -14,8 +14,10 @@ class WeatherNotifier with ChangeNotifier {
     final result = await usecase(city: city);
     result.fold((failure) {
       this.failure = failure;
+      weatherEntity = null;
     }, (entity) {
       weatherEntity = entity;
+      failure = null;
     });
     notifyListeners();
   }

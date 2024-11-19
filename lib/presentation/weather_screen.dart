@@ -17,7 +17,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
   void _onTextFieldChanged(String query) {
     // debouncing the API calls
     if (_debounce?.isActive ?? false) _debounce?.cancel();
-    _debounce = Timer(const Duration(milliseconds: 500), () {
+    _debounce = Timer(const Duration(milliseconds: 800), () {
       WeatherNotifierProvider.of(context).getCurrentWeather(query);
     });
   }
@@ -65,8 +65,8 @@ class _WeatherScreenState extends State<WeatherScreen> {
             ListenableBuilder(
               listenable: weatherNotifier,
               builder: (context, _) {
-                if (weatherNotifier.failure is CityNotFoundFailure) {
-                  // CityNotFoundFailure occurs while typing the city name
+                if (weatherNotifier.failure is InvalidRequestFailure ||
+                    weatherNotifier.failure is CityNotFoundFailure) {
                   return Container();
                 } else if (weatherNotifier.failure is ApiKeyFailure ||
                     weatherNotifier.failure is ServerFailure ||

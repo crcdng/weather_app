@@ -16,6 +16,8 @@ class WeatherRepositoryImpl implements WeatherRepository {
     try {
       final result = await remoteDataSource.getCurrentWeather(city);
       return Right(result.toEntity());
+    } on InvalidRequestException {
+      return const Left(InvalidRequestFailure());
     } on CityNotFoundException {
       return const Left(CityNotFoundFailure());
     } on ApiKeyException {

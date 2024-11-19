@@ -14,27 +14,25 @@ class WeatherRemoteDataSource {
     // print("calling the API");
     final response =
         await client.get(Uri.parse(Urls.currentWeatherByCity(city)));
-
     if (response.statusCode == 200) {
       return WeatherModel.fromJson(json.decode(response.body));
-    } else if (response.statusCode == 404 &&
-        response.body.isNotEmpty &&
-        json.decode(response.body)["message"] != null &&
-        json.decode(response.body)["message"] == "city not found") {
-      throw CityNotFoundException();
+    } else if (response.statusCode == 400) {
+      throw InvalidRequestException();
     } else if (response.statusCode == 401 &&
         response.body.isNotEmpty &&
         json.decode(response.body)["message"] != null &&
         json.decode(response.body)["message"].startsWith("Invalid API key.")) {
       throw ApiKeyException();
+    } else if (response.statusCode == 404 &&
+        response.body.isNotEmpty &&
+        json.decode(response.body)["message"] != null &&
+        json.decode(response.body)["message"] == "city not found") {
+      throw CityNotFoundException();
     } else {
-      // e.g. 400 Bad Request
-      // {"cod":"400","message":"Nothing to geocode"}
-      // print(response.statusCode);
-      // print(Uri.parse(Urls.currentWeatherByCity(city)));
+      // e.g. 500
       throw ServerException();
     }
-    // NOTE SocketException (no Internet connection) is thrown elsewhere.
+    // NOTE a SocketException (no Internet connection) is thrown in the http package.
     // It is also handled in the repository.
   }
 }

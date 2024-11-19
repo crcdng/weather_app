@@ -1,18 +1,18 @@
 # Flutter Lightweight Clean Architecture Example
 
-This is a minimal example (with a lot of explanation) for a lightweight clean architecture and test-driven development in Flutter. It fetches weather data for a city from [OpenWeatherMap](https://openweathermap.org) and displays it. The example is adapted from [this tutorial](https://www.youtube.com/watch?v=g2Mup12MccU) - see other sources below.
+This is a lightweight example (with a lot of explanation) for a clean architecture and test-driven app in Flutter. It fetches weather data from [OpenWeatherMap](https://openweathermap.org) and displays it. This example is adapted from [this tutorial](https://www.youtube.com/watch?v=g2Mup12MccU) - see other sources and inspirations below.
 
 ## Architecture overview 
 
-The application is structured into threee layers: Presentation, Domain and Data. 
+![diagram](docs/weather_app_tdd.png)
 
-From top to bottom:
+The application has three layers: Presentation, Domain and Data. 
 
 ### Presentation layer
 
-The `WeatherNotifier` is a ChangeNotifier. It is provided to the widget tree by `WeatherNotifierProvider`, an Inherited Widget. The `WeatherNotifierProvider` is set up in main.dart.
+The user interface consists of one `WeatherScreen`. The `WeatherNotifier` is a ChangeNotifier. It has a `WeatherEntity` and gets a `GetWeatherUsecase` via the constructor. It calls the use case with the name of the city, sets the entity and notifies the `ListenableBuilder` widget in the `WeatherScreen` which will the rebuild. When the `TextField` changes, `WeatherNotifierProvider` provides the `WeatherNotifier`'s `getCurrentWeather()` method. A debounce mechanism limits the number of calls.
 
-The `WeatherNotifier` has a `WeatherEntity` and gets a `GetWeatherUsecase` via the constructor. It calls the use case with the name of the city, sets the entity and tells the `ListenableBuilder` widget in our `WeatherScreen` to rebuild. When the `TextField` changes, `WeatherNotifier`'s `getCurrentWeather()` method is called. A debounce mechanism limits the number of calls.
+The `WeatherNotifierProvider`, an Inherited Widget, provides the `WeatherNotifier`. This is set up in `main.dart`.
 
 ### Domain layer
 
@@ -26,18 +26,11 @@ Use cases are implemented as callable classes (with a call method) and common in
 
 ### Data layer
 
-The data layer is responsible to wrap remote or local data sources, here the [OpenWeatherMap API](https://openweathermap.org/current). 
+The data layer is responsible to wrap data sources, in this case the [OpenWeatherMap API](https://openweathermap.org/current). 
 
 The `WeatherModel` class extends `WeatherEntity`. It adds a constructor to create its instance from a subset of the JSON format that is coming from the `DataSource`. It also has a method to transform itself into a `WeatherEntity`. 
 
-The `WeatherRemoteDataSource` takes an http client passed in its constructor and its method retuns a Future of a `WeatherModel` converted from JSON. To do this, it talks to the remote OpenWeatherMap API, for which you need to sign up for a free API key. I keep all the information necessary inside the `WeatherRemoteDataSource` class. As with `GetWeatherUsecase` above, I did not add another layer of abstraction by separating it into an abstract superclass and concrete subclass. 
-
-The API call to retrieve the current weather for a city is returned in `constants.dart`: `https://api.openweathermap.org/data/2.5/weather?q=<CITY NAME>&units=metric&appid=<API KEY>`
-
-I am adding the `units=metric` parameter retrieve the temperature in degree Celsius. Because the API key should not be stored in a code repository, it is injected from the environment. Therefore the app must be called like this:
-`flutter run --dart-define OWM_API_KEY=<API KEY> --hot`. In production, the key would be provided by the user at the start of the app / in a settings screen.
-
-There are various issues around handling API keys in Flutter, see: https://codewithandrea.com/articles/flutter-api-keys-dart-define-env-files/.
+The `WeatherRemoteDataSource` takes an http client passed in its constructor and its method retuns a Future of a `WeatherModel` converted from JSON. To do this, it talks to the remote OpenWeatherMap API, for which you need to sign up for a free API key. I keep all the information necessary inside the `WeatherRemoteDataSource` class. As with `GetWeatherUsecase` above, I do not add another layer of abstraction by separating it into an abstract superclass and concrete subclass. 
 
 The `WeatherRepositorImpl` class implements the contract of the `WeatherRepository`. It has a `WeatherRemoteDataSource` passed into the constructor and calls its method. It then uses try/catch to either 
 * transform the `WeatherModel` returned from sucessful API calls into a `WeatherEntity` (Right side of `Either`) or 
@@ -45,7 +38,12 @@ The `WeatherRepositorImpl` class implements the contract of the `WeatherReposito
 
 ### Common objects and functions
 
-`Failure` is an abstract class, extended by concrete Failures, e.g. `ServerFailure`. Each `Failure` is subclass mirrored by an `Exception`. The `Urls` class encapsulates the server address.
+The API call to retrieve the current weather for a city is returned in `urls.dart`: `https://api.openweathermap.org/data/2.5/weather?q=<CITY NAME>&units=metric&appid=<API KEY>`. I am adding the `units=metric` parameter retrieve the temperature in degree Celsius. Because the API key should not be stored in a code repository, it is injected from the environment. Therefore the app must be called like this:
+`flutter run --dart-define OWM_API_KEY=<API KEY> --hot`. In production, the key would be provided by the user at the start of the app / from a settings screen.
+
+There are various topics around handling API keys in Flutter, see: https://codewithandrea.com/articles/flutter-api-keys-dart-define-env-files/.
+
+`Failure` is an abstract class, extended by concrete Failures, e.g. `ServerFailure`. Each `Failure` subclass is mirrored by a corresponding `Exception`. 
 
 ### main.dart
 
@@ -53,7 +51,7 @@ In `main.dart`, the `WeatherNotifierProvider` is inserted into the Widget Tree. 
 
 ## Order of implementation: Domain -> Data -> Presentation 
 
-Start with the Domain layer because the other layers depend on it. Then implement the Data layer, which has most of the implementation and requires more work handling API responses, writing tests and dealing with errors. The user interface including Flutter state management comes last (or can be designed in parallel).   
+It is a good idea to start with the Domain layer because the other layers depend on it. Then we implement the Data layer, which has most of the implementation and requires more work handling API responses, writing tests and dealing with errors. The Presenttion layer with the user interface and Flutter state management comes last (or can be designed in parallel).   
 
 Implement the Domain Layer
 
@@ -73,13 +71,13 @@ Implement the Data Layer
 Implement the Presentation Layer
 
 10. WeatherNotifier (TDD)
-11. WeatherNotifierProvider
+11. WeatherNotifierProvider (TDD)
 12. main.dart  
-13. WeatherScreen / Consumer (TDD)
+13. WeatherScreen (TDD)
 
 ## Tests
 
-The annotation "TDD" below indicates which classes are tested via Test-Driven Development. You can also write code first and tests later, whatever you prefer. 
+The annotation "TDD" indicated  which classes are tested via Test-Driven Development (write tests first, then code). You can also write code first and tests later, whatever you prefer. 
 
 `get_weather_usecase_test.dart` tests whether the (mocked) `WeatherRemoteDataSource` is called and whether `Right(WeatherEntity)` and `Left(ServerFailure)` are returned from the use case.
 
@@ -106,7 +104,7 @@ The folder `integration_test` has an integration test. **Because it calls the re
 
 `flutter test integration_test --dart-define OWM_API_KEY=<API KEY>`
 
-Pure data classes, abstract classes and the third party dependencies are not tested. The ui layer has both unit tests for the `WeatherNotifier` state management class and widget tests for the `WeatherScreen`. The `test/utils` folder contains dummy JSON data that we need in more than one test and a reader helper function.
+Pure data classes, abstract classes and the third party dependencies are not tested. The Presentation layer has both unit tests for the `WeatherNotifier` state management class and widget tests for the `WeatherScreen`. The `test/utils` folder contains dummy JSON data that we need in more than one test and a reader helper function.
 
 I am using the [mocktail](https://pub.dev/packages/mocktail) package for mocking dependencies.
 
@@ -127,31 +125,26 @@ If you deploy to Android, edit `android/app/src/main/AndroidManifest.xml` and ad
 <uses-permission android:name="android.permission.INTERNET" />
 ```
 
-## Why minimal?
+## Why "Lightweight Clean Architecture"?
+"All problems in computer science can be solved by another level of indirection, except for the problem of too many layers of indirection.", attributed to [David Wheeler](https://en.wikipedia.org/wiki/David_Wheeler_%28computer_scientist%29). 
 
-![diagram](docs/weather_app_tdd.png)
+Clean architecture already is a handful with quite a few concepts to grasp. In Flutter clean architecture tutorials there are abstractions and lots of directories. There are also developers with strong opinions on social media who rage against clean architecture for various reasons. Unfortunately these extremes drone out the that you need to find a balance between abstraction and pragmatism.
 
-Clean architecture already is a handful. There are quite a few concepts to grasp and the reasons behind particular decisions are often not explained. There are abstractions and lots of directories. 
 
-"All problems in computer science can be solved by another level of indirection, except for the problem of too many layers of indirection.", attributed to [David Wheeler](https://en.wikipedia.org/wiki/David_Wheeler_%28computer_scientist%29) illustrates the issue of having too much of abstraction. 
 
 Therefore the goal for this example is to be as minimal as possible. I do not use injection containers, hooks, API wrappers, code generation or some of the other third party packages some authors of clean architecture tutorials are fond of. For state management, I follow the basic 'Provider' approach https://docs.flutter.dev/data-and-backend/state-mgmt/simple. I also use the [equatable](https://pub.dev/packages/equatable) package to simplify object comparison in tests a bit and the `Either` construct from the [fpdart library](https://pub.dev/packages/fpdart) in order to transform exceptions into types inside the repository. All in all the app has three external dependencies (fpdart, equatable, http) and one development dependency (mocktail). 
 
-The Flutter state management has two jobs: to notify the user interface (View) of changes in the underlying data and to trigger changes caused by user interaction whichg are then handled in the Domain layer (similar to the "View Model" in MVX speak). These mechanisms implement reactivity and they only require a *minimal amount of code* which is part of the Presentation layer. More precisely, we can identify `WeatherNotifier` as the View Model and `WeatherScreen` as the View of the Model-View-ViewModel (MVVM) pattern. The Model would then comprise the domain and data layers. 
+The Flutter state management notifies the user interface (View) of changes in the underlying data and also triggers changes caused by a user interactions which are then handled in the Domain layer (similar to the "View Model" in MVX speak). These mechanisms implement reactivity and they only require a *minimal amount of code* which is part of the Presentation layer. More precisely, we can identify `WeatherNotifier` as a View Model and `WeatherScreen` as a View of the Model-View-ViewModel (MVVM) pattern. The remaining Model would then comprise the Domain and Data layers. 
 
 I decided to not write additional abstract superclasses of Use Cases to avoid subsequent modeling of the parameters which adds a lot of complexity and little benefit in my oponion. The same goes with the Data Sources which also could be  abstracted by providing an interface. Because tha app only has one feature - getting the current weather - I decided to leave out a "feature" directory and because the example is minimal, I put the files that belong to a leyer into one directory: "ui", "domain" and "data", and a "common" directory for items used besides or across the layers such as error types or constants. 
 
 ## A note on naming 
 
-Some of the terms used in the clean code literature have been adapted by different authors and there seems to be a bit of confusion about naming. As an example, the [management of reactive state in Flutter](https://docs.flutter.dev/data-and-backend/state-mgmt/intro) is sometimes called "business logic". But "business logic" is traditionally known as the core logic of the application bare any user interface and low level data handling. In the clean code approach this is exactly the Domain layer, structured into Entities and Use Cases of the application. 
-
-# TODO: Bug
-
-There is currently a bug I didn't notice before which happens after a successful call when modifying the input. A 400 error is returned from the API which seemed not to have happened before and isn't currently caught by tests. I have to investigate further and should add another integration test next.  
+Some of the terms used in the clean code literature have been adapted by different authors and there seems to be a bit of confusion about naming. As an example, the [management of reactive state in Flutter](https://docs.flutter.dev/data-and-backend/state-mgmt/intro) is sometimes called "business logic". But "business logic" is traditionally known as the core logic of an application bare any user interface and low level data handling. In the clean code approach this is exactly located in the Domain layer, structured into Entities and Use Cases. 
 
 # Outlook
 
-A few ideas for extending the example are:
+A few ideas to extend the example :
 
 * Support different temperature units (a Celcius/Kelvin switch)
 * Load the weather icon from the API (this was done from inside the ui in the tutorial source) 
