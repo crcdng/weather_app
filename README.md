@@ -147,15 +147,15 @@ For me, the benfit of this lightweight clean architecture is that it provides a 
 
 A few ideas for extending the example are:
 
-* Support different temperature units
-* Load the weather icon from the API (this is done from inside the ui in the tutorial source) 
+* Support different temperature units (a Celcius/Kelvin switch)
+* Load the weather icon from the API (this was done from inside the ui in the tutorial source) 
 * Enter the OpenWeather API key on startup, store it and offer a settings screen to change it  
 * Store a list of favourite cities
 * Support different languages
 * Adapt to different platforms (I tested on macOS and Android)
 * Handle loading state / long loading (this is done with Bloc the tutorial source)
 * Expand the app functionality with other data from the OpenWeather API such as forecasts 
-* Design a nice UI / weather animations
+* Design a nice UI / weather animations, e.g inspired by https://www.youtube.com/watch?v=MMq4wkeHkPc 
 * Switch out the API with a different one as an exercise
 
 ## Resources 

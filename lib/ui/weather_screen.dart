@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:weather_app/common/errors.dart';
-// import '../common/errors.dart';
 import 'weather_notifier.dart';
 
 class WeatherScreen extends StatefulWidget {
@@ -17,6 +16,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
   Timer? _debounce;
 
   void _onTextFieldChanged(String query) {
+    // debouncing the API calls
     if (_debounce?.isActive ?? false) _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 500), () {
       Provider.of<WeatherNotifier>(context, listen: false)
@@ -59,13 +59,13 @@ class _WeatherScreenState extends State<WeatherScreen> {
                     borderSide: BorderSide.none,
                     borderRadius: BorderRadius.circular(10)),
               ),
-              // debouncing the API calls
               onChanged: _onTextFieldChanged,
             ),
             const SizedBox(height: 32.0),
             Consumer<WeatherNotifier>(
               builder: (context, notifier, child) {
                 if (notifier.failure is CityNotFoundFailure) {
+                  // CityNotFoundFailure occurs while typing the city name
                   return Container();
                 } else if (notifier.failure is ApiKeyFailure ||
                     notifier.failure is ServerFailure ||
