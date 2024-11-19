@@ -1,6 +1,6 @@
 # Flutter Lightweight Clean Architecture Example
 
-This is a lightweight example (with a lot of explanation) for a clean architecture and test-driven app in Flutter. It fetches weather data from [OpenWeatherMap](https://openweathermap.org) and displays it. This example is adapted from [this tutorial](https://www.youtube.com/watch?v=g2Mup12MccU) - see other sources and inspirations below.
+This is a lightweight example (with a lot of documentation) for a clean architecture and test-driven app in Flutter. It fetches weather data from [OpenWeatherMap](https://openweathermap.org) and displays it. This example is adapted from [this tutorial](https://www.youtube.com/watch?v=g2Mup12MccU) - see other sources and inspirations below.
 
 ## Architecture overview 
 
@@ -18,7 +18,7 @@ The `WeatherNotifierProvider`, an Inherited Widget, provides the `WeatherNotifie
 
 Clean architecture dictates that this central layer does not depend either on the user interface (ui layer) or on the remote API (data layer). 
 
-A use case represents a user action. The `GetWeatherUsecase` receives (the abstract) `WeatherRepository` passed in via the constructor and calls its method. The repository in turn either returns a `Failure` object or a `WeatherEntity`. It is separated into an abstract class in the domain layer that defines the contract (interface) and a concrete class in the data layer that implements it. This technique implements the Dapendeny Inversion Principle and embodies the Dependency Rule: dependencies point "inwards" toward higher level policies.
+A use case represents a user action. The `GetWeatherUsecase` receives (the abstract) `WeatherRepository` passed in via the constructor and calls its method. The repository in turn either returns a `Failure` object or a `WeatherEntity`. It is separated into an abstract class inside the Domain layer that defines the contract (interface) and a concrete class in the Data layer that implements it. This technique implements the Dapendeny Inversion Principle and embodies the Dependency Rule: dependencies point "inwards" toward higher level policies, the Domain layer in this architecture.
 
 `WeatherEntity` is an immutable pure data class that contains the fields we are interested in. Although we don't test it directly it uses the equatable package so that instances of `WeatherModel` can be compared in tests. 
 
@@ -26,11 +26,11 @@ Use cases are implemented as callable classes (with a call method) and common in
 
 ### Data layer
 
-The data layer is responsible to wrap data sources, in this case the [OpenWeatherMap API](https://openweathermap.org/current). 
+The data layer is responsible for wrapping data sources, here the [OpenWeatherMap API](https://openweathermap.org/current). 
 
-The `WeatherModel` class extends `WeatherEntity`. It adds a constructor to create its instance from a subset of the JSON format that is coming from the `DataSource`. It also has a method to transform itself into a `WeatherEntity`. 
+The `WeatherModel` class extends `WeatherEntity`. It adds a constructor to create an instance from a subset of the JSON format that is coming from the `DataSource`. It also has a method to transform itself into a `WeatherEntity`. 
 
-The `WeatherRemoteDataSource` takes an http client passed in its constructor and its method retuns a Future of a `WeatherModel` converted from JSON. To do this, it talks to the remote OpenWeatherMap API, for which you need to sign up for a free API key. I keep all the information necessary inside the `WeatherRemoteDataSource` class. As with `GetWeatherUsecase` above, I do not add another layer of abstraction by separating it into an abstract superclass and concrete subclass. 
+The `WeatherRemoteDataSource` takes an http client passed in its constructor and its method retuns a Future of a `WeatherModel` converted from JSON. To do this, it talks to the remote OpenWeatherMap API, for which you need to sign up for a free API key. I keep all the information necessary inside the `WeatherRemoteDataSource` class. As with `GetWeatherUsecase` above, I do not add another layer of abstraction by separating it into an abstract superclass and concrete subclass as suggested by some other tutorials. 
 
 The `WeatherRepositorImpl` class implements the contract of the `WeatherRepository`. It has a `WeatherRemoteDataSource` passed into the constructor and calls its method. It then uses try/catch to either 
 * transform the `WeatherModel` returned from sucessful API calls into a `WeatherEntity` (Right side of `Either`) or 
