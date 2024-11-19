@@ -4,9 +4,9 @@ import 'package:mocktail/mocktail.dart';
 import 'package:weather_app/common/errors.dart';
 import 'package:weather_app/domain/get_weather_usecase.dart';
 import 'package:weather_app/domain/weather_entity.dart';
-import 'package:weather_app/ui/weather_notifier.dart';
-import 'package:weather_app/ui/weather_notifier_provider.dart';
-import 'package:weather_app/ui/weather_screen.dart';
+import 'package:weather_app/presentation/weather_notifier.dart';
+import 'package:weather_app/presentation/weather_notifier_provider.dart';
+import 'package:weather_app/presentation/weather_screen.dart';
 
 class MockGetWeatherUseCase extends Mock implements GetWeatherUsecase {}
 

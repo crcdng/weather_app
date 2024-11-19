@@ -4,15 +4,15 @@ This is a minimal example (with a lot of explanation) for a lightweight clean ar
 
 ## Architecture overview 
 
-The application is structured in threee layers: UI layer, Domain layer and Data layer. 
+The application is structured into threee layers: Presentation, Domain and Data. 
 
 From top to bottom:
 
-### UI layer
+### Presentation layer
 
 The `WeatherNotifier` is a ChangeNotifier. It is provided to the widget tree by `WeatherNotifierProvider`, an Inherited Widget. The `WeatherNotifierProvider` is set up in main.dart.
 
-The `WeatherNotifier` has a `WeatherEntity` and gets a `GetWeatherUsecase` via the constructor. It calls the use case with the name of the city, sets the entity and tells the `ListenableBuilder` widget in our `WeatherScreen` to rebuild. A debounce mechanism limits the number of calls.
+The `WeatherNotifier` has a `WeatherEntity` and gets a `GetWeatherUsecase` via the constructor. It calls the use case with the name of the city, sets the entity and tells the `ListenableBuilder` widget in our `WeatherScreen` to rebuild. When the `TextField` changes, `WeatherNotifier`'s `getCurrentWeather()` method is called. A debounce mechanism limits the number of calls.
 
 ### Domain layer
 
@@ -50,7 +50,7 @@ The `WeatherRepositorImpl` class implements the contract of the `WeatherReposito
 
 In `main.dart`, we insert a `ChangeNotifierProvider` from the provider package and instantiate the classes down the dependeny chain: `WeatherNotifier`, `GetWeatherUsecase`, `WeatherRepositoryImpl`.
 
-## Order of implementation: Domain -> Data -> UI 
+## Order of implementation: Domain -> Data -> Presentation 
 
 Start with the Domain layer because the other layers depend on it. Then implement the Data layer, which has most of the implementation and requires more work handling API responses, writing tests and dealing with errors. The user interface including Flutter state management comes last (or can be designed in parallel).   
 
@@ -69,11 +69,12 @@ Implement the Data Layer
 8. WeatherRepositoryImpl (TDD)
 9. ServerFailure, ConnectionFailure
 
-Implement the UI Layer
+Implement the Presentation Layer
 
 10. WeatherNotifier (TDD)
-11. main.dart / ChangeNotifierProvider  
-12. WeatherScreen / Consumer (TDD)
+11. WeatherNotifierProvider
+12. main.dart  
+13. WeatherScreen / Consumer (TDD)
 
 ## Tests
 
@@ -135,21 +136,19 @@ Clean architecture already is a handful. There are quite a few concepts to grasp
 
 Therefore the goal for this example is to be as minimal as possible. I do not use injection containers, hooks, API wrappers, code generation or some of the other third party packages some authors of clean architecture tutorials are fond of. For state management, I follow the basic 'Provider' approach https://docs.flutter.dev/data-and-backend/state-mgmt/simple. I also use the [equatable](https://pub.dev/packages/equatable) package to simplify object comparison in tests a bit and the `Either` construct from the [fpdart library](https://pub.dev/packages/fpdart) in order to transform exceptions into types inside the repository. All in all the app has three external dependencies (fpdart, equatable, http) and one development dependency (mocktail). 
 
+The Flutter state management has two jobs: to notify the user interface (View) of changes in the underlying data and to trigger changes caused by user interaction whichg are then handled in the Domain layer (similar to the "View Model" in MVX speak). These mechanisms implement reactivity and they only require a *minimal amount of code* which is part of the Presentation layer. More precisely, we can identify `WeatherNotifier` as the View Model and `WeatherScreen` as the View of the Model-View-ViewModel (MVVM) pattern. The Model would then comprise the domain and data layers. 
+
 I decided to not write additional abstract superclasses of Use Cases to avoid subsequent modeling of the parameters which adds a lot of complexity and little benefit in my oponion. The same goes with the Data Sources which also could be  abstracted by providing an interface. Because tha app only has one feature - getting the current weather - I decided to leave out a "feature" directory and because the example is minimal, I put the files that belong to a leyer into one directory: "ui", "domain" and "data", and a "common" directory for items used besides or across the layers such as error types or constants. 
 
-## Naming conventions
+## A note on naming 
 
-Some of the terms used in the clean code literature have been adapted by different authors and there seems to be a bit of confusion about naming. As an example, the [management of reactive state in Flutter](https://docs.flutter.dev/data-and-backend/state-mgmt/intro) is sometimes called "business logic". But business logic is traditionally known as the core logic of the application bare any user interface and low level data handling. In the clean  code approach this is exactly the Domain layer, structured into Entities and Use Cases of the application (and similar to the "Model" in MVC speak). 
+Some of the terms used in the clean code literature have been adapted by different authors and there seems to be a bit of confusion about naming. As an example, the [management of reactive state in Flutter](https://docs.flutter.dev/data-and-backend/state-mgmt/intro) is sometimes called "business logic". But "business logic" is traditionally known as the core logic of the application bare any user interface and low level data handling. In the clean code approach this is exactly the Domain layer, structured into Entities and Use Cases of the application. 
 
-The Flutter state management has two jobs: to notify the user interface of changes in the underlying data and to trigger changes handled in the Domain layer caused by user interaction (similar to the "Controller" in MVC speak). These mechanisms implement reactivity and they only require a thin layer of code which is part of the "ui layer", a term I prefer over "presentation layer".     
+# TODO: Bug
 
-# Bug
+There is currently a bug I didn't notice before which happens after a successful call when modifying the input. A 400 error is returned from the API which seemed not to have happened before and isn't currently caught by tests. I have to investigate further and should add another integration test next.  
 
-There is currently a bug I didn't see before after modifying the city. A 400 error is returned from the API which didn't happen before and isn't caught by tests currentlt. I have to investigate further and should add another integration test next.  
-
-# Benefits and Outlook
-
-For me, the benfit of this lightweight clean architecture is that it provides a structure in which one knows where to look for certain parts and what to test. It is testable because its dependencies are passed into classes via constructors. We can test layer by layer and mock out the layers that are depended on. It is possible to add, swap and remove elements of the architecture horizontally (user interface, databases, APIs) and vertically (features). It is likely that these benefits become only obvious in a larger project, but keeping this example minimal helps to understand the architecture. 
+# Outlook
 
 A few ideas for extending the example are:
 
@@ -164,6 +163,10 @@ A few ideas for extending the example are:
 * Design a nice UI / weather animations, e.g inspired by https://www.youtube.com/watch?v=MMq4wkeHkPc 
 * Switch out the API with a different one as an exercise
 
+# Benefits 
+
+For me, the benfit of this lightweight clean architecture is that it provides a structure in which one knows where to look for certain parts and what to test. It is testable because its dependencies are passed into classes via constructors. We can test layer by layer and mock out the layers that are depended on. It is possible to add, swap and remove elements of the architecture horizontally (user interface, databases, APIs) and vertically (features). It is likely that these benefits become only obvious in a larger project, but keeping this example minimal helps to understand the architecture. 
+
 ## Resources 
 
 This example code is influenced by these sources:
@@ -173,6 +176,7 @@ This example code is influenced by these sources:
 * https://www.goodreads.com/book/show/18043011-clean-architecture
 * https://www.goodreads.com/en/book/show/387190
 * https://www.manning.com/books/good-code-bad-code
+* https://www.packtpub.com/en-de/product/flutter-design-patterns-and-best-practices-9781801072649 
 
 * https://resocoder.com/2019/08/27/flutter-tdd-clean-architecture-course-1-explanation-project-structure/
 * https://codewithandrea.com/articles/comparison-flutter-app-architectures/ 

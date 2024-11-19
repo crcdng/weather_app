@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:weather_app/ui/weather_notifier.dart';
+import 'package:weather_app/presentation/weather_notifier.dart';
 
 class WeatherNotifierProvider extends InheritedWidget {
   final WeatherNotifier weatherNotifier;

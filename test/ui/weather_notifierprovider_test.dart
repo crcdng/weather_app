@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:weather_app/ui/weather_notifier.dart';
-import 'package:weather_app/ui/weather_notifier_provider.dart';
+import 'package:weather_app/presentation/weather_notifier.dart';
+import 'package:weather_app/presentation/weather_notifier_provider.dart';
 
 class MockWeatherNotifier extends Mock implements WeatherNotifier {}
 

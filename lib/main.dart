@@ -4,9 +4,9 @@ import 'package:http/http.dart' as http;
 import 'data/remote_datasource.dart';
 import 'data/weather_repository_impl.dart';
 import 'domain/get_weather_usecase.dart';
-import 'ui/weather_notifier.dart';
-import 'ui/weather_notifier_provider.dart';
-import 'ui/weather_screen.dart';
+import 'presentation/weather_notifier.dart';
+import 'presentation/weather_notifier_provider.dart';
+import 'presentation/weather_screen.dart';
 
 void main() {
   runApp(const MainApp());
