@@ -28,6 +28,10 @@ class WeatherRemoteDataSource {
         json.decode(response.body)["message"].startsWith("Invalid API key.")) {
       throw ApiKeyException();
     } else {
+      // e.g. 400 Bad Request
+      // {"cod":"400","message":"Nothing to geocode"}
+      // print(response.statusCode);
+      // print(Uri.parse(Urls.currentWeatherByCity(city)));
       throw ServerException();
     }
     // NOTE SocketException (no Internet connection) is thrown elsewhere.

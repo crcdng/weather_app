@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:provider/provider.dart';
 import 'package:weather_app/common/errors.dart';
 import 'package:weather_app/domain/get_weather_usecase.dart';
 import 'package:weather_app/domain/weather_entity.dart';
 import 'package:weather_app/ui/weather_notifier.dart';
+import 'package:weather_app/ui/weather_notifier_provider.dart';
 import 'package:weather_app/ui/weather_screen.dart';
 
 class MockGetWeatherUseCase extends Mock implements GetWeatherUsecase {}
@@ -52,8 +52,8 @@ class FakeWeatherNotifier extends WeatherNotifier {
 Widget _makeTestableWidget(Widget widget, WeatherNotifier weatherNotifier) {
   return MaterialApp(
       home: Scaffold(
-    body: ChangeNotifierProvider<WeatherNotifier>(
-        create: (context) => weatherNotifier, child: widget),
+    body: WeatherNotifierProvider(
+        weatherNotifier: weatherNotifier, child: widget),
   ));
 }
 

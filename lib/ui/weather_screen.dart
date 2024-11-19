@@ -1,9 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:weather_app/common/errors.dart';
-import 'weather_notifier.dart';
+import 'weather_notifier_provider.dart';
 
 class WeatherScreen extends StatefulWidget {
   const WeatherScreen({super.key});
@@ -19,8 +18,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
     // debouncing the API calls
     if (_debounce?.isActive ?? false) _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 500), () {
-      Provider.of<WeatherNotifier>(context, listen: false)
-          .getCurrentWeather(query);
+      WeatherNotifierProvider.of(context).getCurrentWeather(query);
     });
   }
 
@@ -32,6 +30,8 @@ class _WeatherScreenState extends State<WeatherScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final weatherNotifier = WeatherNotifierProvider.of(context);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xff1D1E22),
@@ -62,20 +62,21 @@ class _WeatherScreenState extends State<WeatherScreen> {
               onChanged: _onTextFieldChanged,
             ),
             const SizedBox(height: 32.0),
-            Consumer<WeatherNotifier>(
-              builder: (context, notifier, child) {
-                if (notifier.failure is CityNotFoundFailure) {
+            ListenableBuilder(
+              listenable: weatherNotifier,
+              builder: (context, _) {
+                if (weatherNotifier.failure is CityNotFoundFailure) {
                   // CityNotFoundFailure occurs while typing the city name
                   return Container();
-                } else if (notifier.failure is ApiKeyFailure ||
-                    notifier.failure is ServerFailure ||
-                    notifier.failure is ConnectionFailure) {
+                } else if (weatherNotifier.failure is ApiKeyFailure ||
+                    weatherNotifier.failure is ServerFailure ||
+                    weatherNotifier.failure is ConnectionFailure) {
                   return Center(
                     key: const Key('error_message'),
-                    child: Text(notifier.failure!.message),
+                    child: Text(weatherNotifier.failure!.message),
                   );
                 }
-                if (notifier.weatherEntity == null) {
+                if (weatherNotifier.weatherEntity == null) {
                   return Container();
                 }
                 // return Container();
@@ -93,7 +94,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          notifier.weatherEntity!.city,
+                          weatherNotifier.weatherEntity!.city,
                           style: const TextStyle(
                             fontSize: 22.0,
                           ),
@@ -111,7 +112,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                     ),
                     const SizedBox(height: 8.0),
                     Text(
-                      '${notifier.weatherEntity!.main} | ${notifier.weatherEntity!.description}',
+                      '${weatherNotifier.weatherEntity!.main} | ${weatherNotifier.weatherEntity!.description}',
                       style: const TextStyle(
                         fontSize: 16.0,
                         letterSpacing: 1.2,
@@ -140,7 +141,8 @@ class _WeatherScreenState extends State<WeatherScreen> {
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
-                              notifier.weatherEntity!.temperature.toString(),
+                              weatherNotifier.weatherEntity!.temperature
+                                  .toString(),
                               style: const TextStyle(
                                 fontSize: 16.0,
                                 letterSpacing: 1.2,
@@ -163,7 +165,8 @@ class _WeatherScreenState extends State<WeatherScreen> {
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
-                              notifier.weatherEntity!.pressure.toString(),
+                              weatherNotifier.weatherEntity!.pressure
+                                  .toString(),
                               style: const TextStyle(
                                   fontSize: 16.0,
                                   letterSpacing: 1.2,
@@ -186,7 +189,8 @@ class _WeatherScreenState extends State<WeatherScreen> {
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
-                                notifier.weatherEntity!.humidity.toString(),
+                                weatherNotifier.weatherEntity!.humidity
+                                    .toString(),
                                 style: const TextStyle(
                                   fontSize: 16.0,
                                   letterSpacing: 1.2,
