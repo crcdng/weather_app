@@ -18,7 +18,7 @@ The `WeatherNotifierProvider`, an Inherited Widget, provides the `WeatherNotifie
 
 Clean architecture dictates that this central layer does not depend either on the user interface (ui layer) or on the remote API (data layer). 
 
-A use case represents a user action. The `GetWeatherUsecase` receives (the abstract) `WeatherRepository` passed in via the constructor and calls its method. The repository in turn either returns a `Failure` object or a `WeatherEntity`. It is separated into an abstract class inside the Domain layer that defines the contract (interface) and a concrete class in the Data layer that implements it. This technique implements the Dapendeny Inversion Principle and embodies the Dependency Rule: dependencies point "inwards" toward higher level policies, the Domain layer in this architecture.
+A use case represents a user action. The `GetWeatherUsecase` receives (the abstract) `WeatherRepository` passed in via the constructor and calls its method. The repository in turn either returns a `Failure` object or a `WeatherEntity`. It is separated into an abstract class inside the Domain layer that defines the contract (interface) and a concrete class in the Data layer that implements it. This technique implements the Dependeny Inversion Principle and embodies the Dependency Rule: dependencies point "inwards" toward higher level policies, the Domain layer in this architecture.
 
 `WeatherEntity` is an immutable pure data class that contains the fields we are interested in. Although we don't test it directly it uses the equatable package so that instances of `WeatherModel` can be compared in tests. 
 
