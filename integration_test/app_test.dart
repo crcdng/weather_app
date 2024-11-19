@@ -6,8 +6,9 @@ import 'package:weather_app/main.dart';
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  // note this test calls the remote API, therefore it must be run with
+  // NOTE this test calls the remote API which requires an API key. therefore it must be run from the command line with
   // "flutter test integration_test --dart-define OWM_API_KEY=<API KEY>"
+  // running this test from the Testing tab in VSCode will fail
 
   group('end-to-end test', () {
     testWidgets('enter a city name and receive the weather', (tester) async {
