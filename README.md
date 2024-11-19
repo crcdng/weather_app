@@ -39,16 +39,17 @@ I am adding the `units=metric` parameter retrieve the temperature in degree Cels
 
 There are various issues around handling API keys in Flutter, see: https://codewithandrea.com/articles/flutter-api-keys-dart-define-env-files/.
 
-The `WeatherRepositorImpl` class implements the contract of the `WeatherRepository`. It has a `WeatherRemoteDataSource` passed in the constructor and calls its method. It uses try/catch to transform exceptions into `Failure` objects (Left side of Either) and the `WeatherModel` returned from sucessful calls into a `WeatherEntity` (Right side of Either). 
+The `WeatherRepositorImpl` class implements the contract of the `WeatherRepository`. It has a `WeatherRemoteDataSource` passed into the constructor and calls its method. It then uses try/catch to either 
+* transform the `WeatherModel` returned from sucessful API calls into a `WeatherEntity` (Right side of `Either`) or 
+* transform exceptions into `Failure` objects (Left side of `Either`). 
 
 ### Common objects and functions
 
-`Failure` is an abstract class, to be extended by concrete Failures, e.g. `ServerFailure`
-`ServerException` can be thrown in `WeatherRemoteDataSource`. 
+`Failure` is an abstract class, extended by concrete Failures, e.g. `ServerFailure`. Each `Failure` is subclass mirrored by an `Exception`. The `Urls` class encapsulates the server address.
 
 ### main.dart
 
-In `main.dart`, we insert a `ChangeNotifierProvider` from the provider package and instantiate the classes down the dependeny chain: `WeatherNotifier`, `GetWeatherUsecase`, `WeatherRepositoryImpl`.
+In `main.dart`, the `WeatherNotifierProvider` is inserted into the Widget Tree. Here the classes down the dependeny chain are explicitely instatiated: `WeatherNotifier`, `GetWeatherUsecase` and `WeatherRepositoryImpl`.
 
 ## Order of implementation: Domain -> Data -> Presentation 
 
