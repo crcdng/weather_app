@@ -10,9 +10,9 @@ From top to bottom:
 
 ### UI layer
 
-The `WeatherNotifier` is a ChangeNotifier. It has a `WeatherEntity` and gets a `GetWeatherUsecase` via the constructor. It calls the `GetWeatherUsecase` with the name of the city, sets the `WeatherEntity` and notifies the `Consumer` widget on our `WeatherScreen`.
+The `WeatherNotifier` is a ChangeNotifier. It is provided to the widget tree by `WeatherNotifierProvider`, an Inherited Widget. The `WeatherNotifierProvider` is set up in main.dart.
 
-The WeatherScreen hosts the `Consumer` widget and the `Provider.of<WeatherNotifier>(context, listen: false)` call to talk to the `WeatherNotifier`. A debounce mechanism limits the number of calls.
+The `WeatherNotifier` has a `WeatherEntity` and gets a `GetWeatherUsecase` via the constructor. It calls the use case with the name of the city, sets the entity and tells the `ListenableBuilder` widget in our `WeatherScreen` to rebuild. A debounce mechanism limits the number of calls.
 
 ### Domain layer
 
@@ -98,7 +98,9 @@ The `WeatherRemoteDataSource` is mocked.
 
 `weather_screen_test.dart` consists of widget tests. To get the test green that checks if the weather info appears on the screen, it is necessary to mock/stub/fake `WeatherNotifier`, which is a `ChangeNotifier` that updates the widget tree via the `Consumer` widget. This part is a bit tedious and [not well documented](https://github.com/rrousselGit/provider/issues/182). It is also tested that `CityNotFoundFailure` does not display a message whereas other failures show one.
 
-Folder `integration_test` has an integration test. Because it calls the remote OpenWeatherMap API, it must be run with the API key
+`weather_notifier_provider.dart` currently misses some tests, that's why I included a failing test as a reminder. It's not clear to me how / what to test in an Inherited Widget.
+
+The folder `integration_test` has an integration test. **Because it calls the remote OpenWeatherMap API, it must be run with the API key**
 
 `flutter test integration_test --dart-define OWM_API_KEY=<API KEY>`
 
@@ -131,7 +133,7 @@ Clean architecture already is a handful. There are quite a few concepts to grasp
 
 "All problems in computer science can be solved by another level of indirection, except for the problem of too many layers of indirection.", attributed to [David Wheeler](https://en.wikipedia.org/wiki/David_Wheeler_%28computer_scientist%29) illustrates the issue of having too much of abstraction. 
 
-Therefore the goal for this example is to be as minimal as possible. I do not use injection containers, hooks, API wrappers, code generation or some of the other third party packages some authors of clean architecture tutorials are fond of. For state management, I follow the basic 'Provider' approach https://docs.flutter.dev/data-and-backend/state-mgmt/simple. I also use the [equatable](https://pub.dev/packages/equatable) package to simplify object comparison in tests a bit and the `Either` construct from the [fpdart library](https://pub.dev/packages/fpdart) in order to transform exceptions into types inside the repository. All in all the app has four external dependencies (fpdart, equatable, http, provider) and one development dependency (mocktail). 
+Therefore the goal for this example is to be as minimal as possible. I do not use injection containers, hooks, API wrappers, code generation or some of the other third party packages some authors of clean architecture tutorials are fond of. For state management, I follow the basic 'Provider' approach https://docs.flutter.dev/data-and-backend/state-mgmt/simple. I also use the [equatable](https://pub.dev/packages/equatable) package to simplify object comparison in tests a bit and the `Either` construct from the [fpdart library](https://pub.dev/packages/fpdart) in order to transform exceptions into types inside the repository. All in all the app has three external dependencies (fpdart, equatable, http) and one development dependency (mocktail). 
 
 I decided to not write additional abstract superclasses of Use Cases to avoid subsequent modeling of the parameters which adds a lot of complexity and little benefit in my oponion. The same goes with the Data Sources which also could be  abstracted by providing an interface. Because tha app only has one feature - getting the current weather - I decided to leave out a "feature" directory and because the example is minimal, I put the files that belong to a leyer into one directory: "ui", "domain" and "data", and a "common" directory for items used besides or across the layers such as error types or constants. 
 
@@ -140,6 +142,10 @@ I decided to not write additional abstract superclasses of Use Cases to avoid su
 Some of the terms used in the clean code literature have been adapted by different authors and there seems to be a bit of confusion about naming. As an example, the [management of reactive state in Flutter](https://docs.flutter.dev/data-and-backend/state-mgmt/intro) is sometimes called "business logic". But business logic is traditionally known as the core logic of the application bare any user interface and low level data handling. In the clean  code approach this is exactly the Domain layer, structured into Entities and Use Cases of the application (and similar to the "Model" in MVC speak). 
 
 The Flutter state management has two jobs: to notify the user interface of changes in the underlying data and to trigger changes handled in the Domain layer caused by user interaction (similar to the "Controller" in MVC speak). These mechanisms implement reactivity and they only require a thin layer of code which is part of the "ui layer", a term I prefer over "presentation layer".     
+
+# Bug
+
+There is currently a bug I didn't see before after modifying the city. A 400 error is returned from the API which didn't happen before and isn't caught by tests currentlt. I have to investigate further and should add another integration test next.  
 
 # Benefits and Outlook
 
