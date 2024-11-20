@@ -1,6 +1,6 @@
 # Flutter Lightweight Clean Architecture Example
 
-This is a lightweight example (with a lot of documentation) for a clean architecture and test-driven app in Flutter. It fetches weather data from [OpenWeatherMap](https://openweathermap.org) and displays it. This example is adapted from [this tutorial](https://www.youtube.com/watch?v=g2Mup12MccU) - see other sources and inspirations below. Since November 2024 the official Flutter documentation now contains an [approach](https://docs.flutter.dev/app-architecture) that is roughly similar but not identical to mine.  
+This is a lightweight example (with a lot of documentation) for a clean architecture and test-driven app in Flutter. It fetches weather data from [OpenWeatherMap](https://openweathermap.org) and displays it. This example is adapted from [this tutorial](https://www.youtube.com/watch?v=g2Mup12MccU) - see other sources and inspirations below. Since November 2024 the official Flutter documentation now contains an [approach](https://docs.flutter.dev/app-architecture) that is roughly similar but not identical to the one described here.  
 
 ## Architecture overview 
 
@@ -138,7 +138,7 @@ I decided to not write additional abstract superclasses of Use Cases to avoid su
 
 ## A note on naming 
 
-Some of the terms used in the programming literature are interpreted differently by different authors and there seems to be quite a bit of confusion about naming. As an example, the [management of reactive state in Flutter](https://docs.flutter.dev/data-and-backend/state-mgmt/intro) is sometimes called "business logic". But "business logic" is traditionally known as the core logic of an application bare any user interface and low level data handling. In the clean code approach this is exactly located in the Domain layer, structured into Entities and Use Cases. In a similar the terms MVC and MVVM are often vehemently debated. 
+Some of the terms used in the programming literature are interpreted differently by different authors and there seems to be quite a bit of confusion about naming. As an example, the [management of reactive state in Flutter](https://docs.flutter.dev/data-and-backend/state-mgmt/intro) is sometimes called "business logic". But "business logic" is traditionally known as the core logic of an application bare any user interface and low level data handling. In the clean code approach this is exactly located in the Domain layer, structured into Entities and Use Cases. In a similar the terms MVC and MVVM have been vehemently debated. 
 
 # Outlook
 

@@ -15,13 +15,17 @@ class WeatherRemoteDataSource {
     final response =
         await client.get(Uri.parse(Urls.currentWeatherByCity(city)));
     if (response.statusCode == 200) {
-      return WeatherModel.fromJson(json.decode(response.body));
+      return WeatherModel.fromJson(
+          json.decode(response.body) as Map<String, dynamic>);
     } else if (response.statusCode == 400) {
       throw InvalidRequestException();
     } else if (response.statusCode == 401 &&
         response.body.isNotEmpty &&
         json.decode(response.body)["message"] != null &&
-        json.decode(response.body)["message"].startsWith("Invalid API key.")) {
+        json
+            .decode(response.body)["message"]
+            .toString()
+            .startsWith("Invalid API key.")) {
       throw ApiKeyException();
     } else if (response.statusCode == 404 &&
         response.body.isNotEmpty &&

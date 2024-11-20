@@ -18,7 +18,8 @@ void main() {
       humidity: 60);
 
   final Map<String, dynamic> testJsonMap =
-      json.decode(readJson('test/utils/weather_response.json'));
+      json.decode(readJson('test/utils/weather_response.json'))
+          as Map<String, dynamic>;
 
   setUp(() {
     sut = testWeatherModel;
