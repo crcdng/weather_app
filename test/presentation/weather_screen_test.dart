@@ -19,7 +19,7 @@ const testWeatherEntity = WeatherEntity(
     humidity: 60);
 
 class MockWeatherNotifier extends Mock {
-  getCurrentWeather(city);
+  Future<void> getCurrentWeather(String city);
 }
 
 // NOTE a notifier fake which needs to be instrumented for the widget test
@@ -30,11 +30,11 @@ class FakeWeatherNotifier extends WeatherNotifier {
   FakeWeatherNotifier({required this.mockWeatherNotifier})
       : super(usecase: MockGetWeatherUseCase());
 
-  instrumentFailure(Failure failure) {
+  void instrumentFailure(Failure failure) {
     instrumentedFailure = failure;
   }
 
-  resetInstrumentedFailure() {
+  void resetInstrumentedFailure() {
     instrumentedFailure = null;
   }
 

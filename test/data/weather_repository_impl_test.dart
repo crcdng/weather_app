@@ -53,7 +53,8 @@ void main() {
 
         final result = await sut.getCurrentWeather(testCityName);
 
-        expect(result, equals(const Right(testWeatherEntity)));
+        expect(result,
+            equals(const Right<Failure, WeatherEntity>(testWeatherEntity)));
       },
     );
 
@@ -66,7 +67,10 @@ void main() {
 
         final result = await sut.getCurrentWeather(testNonCityName);
 
-        expect(result, equals(const Left(CityNotFoundFailure())));
+        expect(
+            result,
+            equals(const Left<CityNotFoundFailure, WeatherEntity>(
+                CityNotFoundFailure())));
       },
     );
 
@@ -78,7 +82,8 @@ void main() {
 
         final result = await sut.getCurrentWeather(testCityName);
 
-        expect(result, equals(const Left(ApiKeyFailure())));
+        expect(result,
+            equals(const Left<ApiKeyFailure, WeatherEntity>(ApiKeyFailure())));
       },
     );
 
@@ -90,7 +95,8 @@ void main() {
 
         final result = await sut.getCurrentWeather(testCityName);
 
-        expect(result, equals(const Left(ServerFailure())));
+        expect(result,
+            equals(const Left<ServerFailure, WeatherEntity>(ServerFailure())));
       },
     );
 
@@ -103,7 +109,10 @@ void main() {
 
         final result = await sut.getCurrentWeather(testNonCityName);
 
-        expect(result, equals(const Left(ConnectionFailure())));
+        expect(
+            result,
+            equals(const Left<ConnectionFailure, WeatherEntity>(
+                ConnectionFailure())));
       },
     );
   });
