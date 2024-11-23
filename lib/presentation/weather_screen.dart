@@ -65,10 +65,13 @@ class _WeatherScreenState extends State<WeatherScreen> {
             ListenableBuilder(
               listenable: weatherNotifier,
               builder: (context, _) {
+                // ignore Failures that occur during typing
                 if (weatherNotifier.failure is InvalidRequestFailure ||
                     weatherNotifier.failure is CityNotFoundFailure) {
                   return Container();
-                } else if (weatherNotifier.failure is ApiKeyFailure ||
+                }
+                // signal Failures that are relevant
+                else if (weatherNotifier.failure is ApiKeyFailure ||
                     weatherNotifier.failure is ServerFailure ||
                     weatherNotifier.failure is ConnectionFailure) {
                   return Center(
@@ -76,17 +79,10 @@ class _WeatherScreenState extends State<WeatherScreen> {
                     child: Text(weatherNotifier.failure!.message),
                   );
                 }
-                if (weatherNotifier.weatherEntity == null) {
+                // no Failure and no Data -> we haven't typed anything
+                else if (weatherNotifier.weatherEntity == null) {
                   return Container();
                 }
-                // return Container();
-                // TODO handle slow loading
-                // if (state is WeatherLoading) {
-                //   return const Center(
-                //     child: CircularProgressIndicator(),
-                //   );
-                // }
-                // if (state is WeatherLoaded) {
                 return Column(
                   key: const Key('weather_data'),
                   children: [
