@@ -75,6 +75,20 @@ Implement the Presentation Layer
 12. main.dart  
 13. WeatherScreen (TDD)
 
+## Order of reading the code: Domain -> Data | Presentation 
+
+"Code is more often read than written" is a timeless piece of programmer wisdom. Therefore it is crucial that your codebase is easily readable. As critics have pointed out, highly abstract, multi-layered architectures are often difficult to navigate for someone unfamiliar with the codebase with dozens of directories and hundreds of files to be ingested. This doesn't apply to the lighweight clean approach. For example, if you know WeatherEntity in the Domain Layer, you already know from the architecture that WeatherModel in the Data layer converts the data representation (here from JSON) to create the Entity. Similiarly, the State Management / ModelView contains minimal code that notifies the View either about the Entity or Failure objects - there is no need to read it.
+
+In the Domain Layer: WeatherEntity and GetWeatherUsecase. Entities and Use Cases form the core of the application. They don't contain any implementation details. After looking at a few lines of code you should have an idea what the app does. 
+
+In the Data Layer: WeatherRepositoryImpl. Here you learn what the Data Layer returns after requests to the data storage succeed or errors occur respectively. For implementation details look at WeatherRemoteDataSource.
+
+In the Presentation Layer: WeatherScreen. This is the widget hierarchy that deescribes the user interface. 
+
+Finally have a look at the tests or run them to get an idea what is tested. 
+
+That's it.
+
 ## Tests
 
 The annotation "TDD" indicated  which classes are tested via Test-Driven Development (write tests first, then code). You can also write code first and tests later, whatever you prefer. 
