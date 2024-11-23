@@ -12,8 +12,33 @@ void main() {
   runApp(const MainApp());
 }
 
-class MainApp extends StatelessWidget {
+class MainApp extends StatefulWidget {
   const MainApp({super.key});
+
+  @override
+  State<MainApp> createState() => _MainAppState();
+}
+
+class _MainAppState extends State<MainApp> {
+  late WeatherNotifier weatherNotifier;
+
+  @override
+  void initState() {
+    super.initState();
+    weatherNotifier = WeatherNotifier(
+      usecase: GetWeatherUsecase(
+        repository: WeatherRepositoryImpl(
+          remoteDataSource: WeatherRemoteDataSource(client: http.Client()),
+        ),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    weatherNotifier.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,15 +46,7 @@ class MainApp extends StatelessWidget {
       home: Scaffold(
         body: Center(
           child: WeatherNotifierProvider(
-              weatherNotifier: WeatherNotifier(
-                usecase: GetWeatherUsecase(
-                  repository: WeatherRepositoryImpl(
-                    remoteDataSource:
-                        WeatherRemoteDataSource(client: http.Client()),
-                  ),
-                ),
-              ),
-              child: const WeatherScreen()),
+              weatherNotifier: weatherNotifier, child: const WeatherScreen()),
         ),
       ),
     );
