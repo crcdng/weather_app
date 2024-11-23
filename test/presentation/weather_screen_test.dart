@@ -124,6 +124,22 @@ void main() {
       expect(find.byKey(const Key('error_message')), findsNothing);
     });
 
+    testWidgets(
+        'should not show a message when an InvalidRequestFailure occurs',
+        (tester) async {
+      when(() => mockWeatherNotifier.getCurrentWeather(testCityName))
+          .thenAnswer((invocation) async {});
+      fakeWeatherNotifier.instrumentFailure(const InvalidRequestFailure());
+      await tester.pumpWidget(
+          _makeTestableWidget(const WeatherScreen(), fakeWeatherNotifier));
+      final textField = find.byType(TextField);
+      expect(textField, findsOneWidget);
+      await tester.enterText(textField, "Berlin");
+      // debounce function requires to wait a bit
+      await tester.pump(const Duration(seconds: 3));
+      expect(find.byKey(const Key('error_message')), findsNothing);
+    });
+
     testWidgets('should show a message when a ApiKeyFailure occurs',
         (tester) async {
       when(() => mockWeatherNotifier.getCurrentWeather(testCityName))

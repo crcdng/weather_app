@@ -96,7 +96,7 @@ The `WeatherRemoteDataSource` is mocked.
 
 `weather_notifier_test.dart` tests the state management: is `WeatherNotifier` calling the (mocked) `GetWeatherUsecase`? Are listeners notified? Are the fields updated with a `WeatherEntity` or with a `Failure`? 
 
-`weather_screen_test.dart` consists of widget tests. To get the test green that checks if the weather info appears on the screen, it is necessary to mock/stub/fake `WeatherNotifier`, which is a `ChangeNotifier` that updates the widget tree via the `Consumer` widget. This part is a bit tedious and [not well documented](https://github.com/rrousselGit/provider/issues/182). It is also tested that `CityNotFoundFailure` does not display a message whereas other failures show one.
+`weather_screen_test.dart` consists of widget tests. To get the test green that checks if the weather info appears on the screen, it is necessary to mock/stub/fake `WeatherNotifier`, which is a `ChangeNotifier` that updates the widget tree via the `InheritedWidget`. It  also tests `Failure`s who display a message whereas other `Failure`s don't.
 
 `weather_notifier_provider.dart` currently misses some tests, that's why I included a failing test as a reminder. It's not clear to me how / what to test in an Inherited Widget.
 
