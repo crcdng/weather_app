@@ -2,6 +2,8 @@
 
 This is a lightweight example (with a lot of documentation) for a clean architecture and test-driven app in Flutter. It fetches weather data from [OpenWeatherMap](https://openweathermap.org) and displays it. This example is adapted from [this tutorial](https://www.youtube.com/watch?v=g2Mup12MccU) - see other sources and inspirations below. Since November 2024 the official Flutter documentation now contains an [approach](https://docs.flutter.dev/app-architecture) that is roughly similar but not identical to the one described here.  
 
+Tested on Android and macOS.
+
 ## Architecture overview 
 
 ![diagram](docs/weather_app_tdd.png)

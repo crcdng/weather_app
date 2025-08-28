@@ -1,22 +1,22 @@
 name: weather_app
 description: "A minimal example for clean architecture and test-driven development."
 publish_to: 'none'
-version: 0.1.0
+version: 0.1.1
 
 environment:
-  sdk: '>=3.3.2 <4.0.0'
+  sdk: ^3.8.1
 
 dependencies:
-  equatable: ^2.0.7
   flutter:
     sdk: flutter
+  equatable: ^2.0.7
   fpdart: ^1.1.1
-  http: ^1.4.0
+  http: ^1.5.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
   mocktail: ^1.0.4
   integration_test:
     sdk: flutter
