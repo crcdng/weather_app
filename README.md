@@ -1,6 +1,6 @@
 # Flutter Lightweight Clean Architecture Example
 
-This is a lightweight example (with a lot of documentation) for a clean architecture and test-driven app in Flutter. It fetches weather data from [OpenWeatherMap](https://openweathermap.org) and displays it. This example is adapted from [this tutorial](https://www.youtube.com/watch?v=g2Mup12MccU) - see other sources and inspirations below. Since November 2024, the official Flutter documentation contains an [approach](https://docs.flutter.dev/app-architecture) that is somewhat similar but not identical to the one described here.  
+This is a lightweight example (with a lot of documentation) for a clean architecture and test-driven app in Flutter. It fetches weather data from [OpenWeatherMap](https://openweathermap.org) and displays it. The example is adapted from [this tutorial](https://www.youtube.com/watch?v=g2Mup12MccU) - see other sources and inspirations below. Since 2024, the official Flutter documentation contains an [approach](https://docs.flutter.dev/app-architecture) that is somewhat similar but not identical to the one described here.  
 
 Tested on Android and macOS.
 
@@ -18,25 +18,25 @@ The `WeatherNotifierProvider`, an Inherited Widget, provides the `WeatherNotifie
 
 ### Domain layer
 
-Clean architecture mandates that this central layer does not depend either on the user interface (ui layer) or on the remote API (data layer). 
+Clean architecture mandates that the central layer does not depend either on the user interface (presentation layer) or on the remote API (data layer). 
 
-A use case represents a user action. The `GetWeatherUsecase` receives (the abstract) `WeatherRepository` passed in via the constructor and calls its method. The repository, in turn, either returns a `Failure` object or a `WeatherEntity`. It is separated into an abstract class inside the Domain layer that defines the contract (interface) and a concrete class in the Data layer that implements it. This technique implements the Dependency Inversion Principle and embodies the Dependency Rule: dependencies point "inwards" toward higher-level policies. In this architecture, that is the Domain layer.
+A use case represents a user action. The `GetWeatherUsecase` receives (the abstract) `WeatherRepository` passed in via the constructor and calls its method. The repository, in turn, either returns a `Failure` object or a `WeatherEntity`. It is separated into an abstract class inside the Domain layer that defines the contract (interface) and a concrete class in the Data layer that implements it. This technique implements the Dependency Inversion Principle and embodies the Dependency Rule: dependencies point "inwards" toward higher-level policies, that is the Domain layer.
 
 `WeatherEntity` is an immutable pure data class that contains the fields we are interested in. Although we don't test it directly, it uses the equatable package so that instances of `WeatherModel` can be compared in tests. 
 
-Use cases are implemented as callable classes, with a call method and a common interface. This could be implemented with an abstract superclass and additional work on the parameters going into the call method, which I didn't do her for brevity.
+Use cases are implemented as callable classes, with a call method and a common interface. This could also be done with an abstract superclass and additional work on the parameters going into the call method. I avoid that approach because it comes with additional boilerplate and I don't see the benefits here.
 
 ### Data layer
 
-The data layer is responsible for wrapping data sources, here the [OpenWeatherMap API](https://openweathermap.org/current). 
+The data layer is responsible for wrapping data sources, in this case the [OpenWeatherMap API](https://openweathermap.org/current). 
 
 The `WeatherModel` class extends `WeatherEntity`. It adds a constructor to create an instance from a subset of the JSON format coming from the `DataSource`. It also has a method to transform itself into a `WeatherEntity`. 
 
-The `WeatherRemoteDataSource` takes an http client passed in its constructor. Its method returns a Future of a `WeatherModel` converted from JSON. To do this, it talks to the remote OpenWeatherMap API, for which you need to sign up for a free API key. I am keeping all the required information  inside the `WeatherRemoteDataSource` class. As with `GetWeatherUsecase` above, I do not add another layer of abstraction by separating it into an abstract superclass and concrete subclass as suggested by some other tutorials. 
+The `WeatherRemoteDataSource` takes an http client passed in its constructor. Its method returns a Future of a `WeatherModel` converted from JSON. To do this, it talks to the remote OpenWeatherMap API, for which you need to sign up for a free API key. I am keeping all the required information  inside the `WeatherRemoteDataSource` class. As with the `GetWeatherUsecase` above, I do not add a layer of abstraction by separating it into an abstract superclass and concrete subclass as suggested by some other tutorials. 
 
 The `WeatherRepositorImpl` class implements the contract of the `WeatherRepository`. It has a `WeatherRemoteDataSource` passed into the constructor and calls its method. It then uses try/catch to either 
 * transform the `WeatherModel` returned from successful API calls into a `WeatherEntity` (Right side of `Either`) or 
-* transform exceptions into `Failure` objects (Left side of `Either`). 
+* transform exceptions into `Failure` objects (Left side of `Either`). This keeps exceptions in the data layer.
 
 ### Common objects and functions
 
@@ -45,15 +45,15 @@ The API call to retrieve the current weather for a city is returned in `urls.dar
 
 Handling API keys in Flutter has various aspects, see: https://codewithandrea.com/articles/flutter-api-keys-dart-define-env-files/.
 
-`Failure` is an abstract class, extended by concrete Failures, e.g. `ServerFailure`. Each `Failure` subclass is mirrored by a corresponding `Exception`. 
+`Failure` is an abstract class, extended by concrete Failures, e.g. `ServerFailure`. Each `Failure` subclass mirrors a corresponding `Exception`. 
 
 ### main.dart
 
-In `main.dart`, the `WeatherNotifierProvider` is inserted into the Widget Tree. The classes further down the dependency chain are explicitly instantiated: `WeatherNotifier`, `GetWeatherUsecase` and `WeatherRepositoryImpl`. Although the amount of nesting appears verbose in this approach, I prefer clarity over the 'magic' that hides it away that is introduced by a service locator.
+In `main.dart`, the `WeatherNotifierProvider` is inserted into the Widget Tree. The classes further down the dependency chain are also explicitly instantiated here: `WeatherNotifier`, `GetWeatherUsecase` and `WeatherRepositoryImpl`. Although the amount of nesting appears verbose on first sight, it provides clarity about the dependencies, compared to 'magic' that hides them away which comes with using a service locator.
 
 ## Order of implementation: Domain -> Data -> Presentation 
 
-It is a good idea to start with the Domain layer because the other layers depend on it. Then we implement the Data layer, which contains most of the implementation and requires more work handling API responses, writing tests and dealing with errors. The Presentation layer with the user interface and Flutter state management comes last (or can be designed in parallel).   
+In this apoproach, it is essential to start with the Domain layer because the other layers depend on it. Then we implement the Data layer, which contains most of the implementation and requires more work handling API responses, writing tests and dealing with errors. The Presentation layer with the user interface and Flutter state management comes last (or can be designed in parallel).   
 
 Implement the Domain Layer
 
@@ -142,6 +142,7 @@ If you deploy to Android, edit `android/app/src/main/AndroidManifest.xml` and ad
 ```
 
 ## Why "Lightweight Clean Architecture"?
+
 "All problems in computer science can be solved by another level of indirection, except for the problem of too many layers of indirection.", attributed to [David Wheeler](https://en.wikipedia.org/wiki/David_Wheeler_%28computer_scientist%29). 
 
 Clean architecture already has more than handful of concepts to grasp. The Flutter clean architecture tutorials I visited are full of abstractions and start with lots of directories. On the other hand there are  developers with strong opinions on social media who rage against clean architecture for various reasons. Unfortunately these extremes drone out the fact that as a developer you need to find a balance between solid architecture and pragmatism.
@@ -156,7 +157,7 @@ I decided not to write additional abstract superclasses of Use Cases, as seen in
 
 Some of the terms used in the programming literature are interpreted differently by different authors, and there seems to be quite a bit of confusion about naming. As an example, the [management of reactive state in Flutter](https://docs.flutter.dev/data-and-backend/state-mgmt/intro) is sometimes called "business logic". But "business logic" is traditionally known as the core logic of an application, without any user interface or low level data handling. In the clean code approach, this is located in the Domain layer, structured into Entities and Use Cases. Furthermore, the question if the terms 'MVC' or 'MVVM' apply to Flutter has been [vehemently debated](https://github.com/flutter/website/issues/11438) in the community. 
 
-# Benefits 
+# Benefits of the Approach
 
 For me, the benefit of this lightweight clean architecture is that it provides a structure in which one knows where to look for certain parts and what to test. It is testable because its dependencies are passed into classes via constructors. We can test layer by layer and mock out the layers that other layers depend on. It is possible to add, swap and remove elements of the architecture horizontally (user interface, databases, APIs) and vertically (features). Some of these benefits likely become only obvious in a larger project, but keeping the example minimal helps in understanding the architecture. 
 
